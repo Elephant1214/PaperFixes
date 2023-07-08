@@ -1,0 +1,25 @@
+{
+    "package": "me.elephant1214.paperfixes.mixin",
+    "refmap": "paperfixes-refmap.json",
+    "minVersion": "0.8",
+    "required": true,
+    "compatibilityLevel": "JAVA_8",
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "mixins": [
+        "common.MixinChunk",
+        "common.MixinExplosion",
+        "common.MixinExtendedBlockStorage",
+        "common.MixinMinecraftServer",
+        "common.MixinNetworkManager",
+        "common.MixinRangedAttribute",
+        "common.MixinTeleporter",
+        "common.MixinWorld",
+        "common.accessor.AccessorExplosion",
+        "common.invoker.InvokerNetHandlerPlayServer"
+    ],
+    "server": [
+        "server.MixinTileEntityChest"
+    ]
+}
