@@ -1,7 +1,6 @@
 package me.elephant1214.paperfixes.mixin.common;
 
 import io.netty.channel.Channel;
-import me.elephant1214.paperfixes.PaperFixes;
 import net.minecraft.network.NetworkManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,6 +13,7 @@ import java.util.Queue;
 
 @Mixin(NetworkManager.class)
 public class MixinNetworkManager {
+    @SuppressWarnings("rawtypes")
     @Shadow
     @Final
     private Queue outboundPacketsQueue;
