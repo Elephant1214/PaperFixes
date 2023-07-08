@@ -2,8 +2,8 @@
     {
         "modid": "paperfixes",
         "name": "Paper Fixes",
-        "description": "Bug and performance fixes from Bukkit, Spigot, and Paper",
-        "version": "0.1.0",
+        "description": "A collection of bug and performance fixes from CraftBukkit, Spigot, and Paper in a Forge mod.",
+        "version": "0.1.0-beta",
         "mcversion": "1.12.2",
         "url": "https://github.com/Elephant1214/PaperFixes",
         "updateUrl": "",

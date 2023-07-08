@@ -75,7 +75,6 @@ tasks.withType(JavaCompile::class) {
 tasks.withType(Jar::class) {
     archiveBaseName.set("PaperFixes")
     manifest.attributes.run {
-        this["FMLCorePluginContainsFMLMod"] = "true"
         this["ForceLoadAsMod"] = "true"
         this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
         this["MixinConfigs"] = "paperfixes.mixins.json"

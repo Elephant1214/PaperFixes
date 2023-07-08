@@ -1,5 +1,5 @@
 # PaperFixes
-A collection of bug and performance fixes from CraftBukkit, Spigot, and Paper in a Forge mod
+A collection of bug and performance fixes from CraftBukkit, Spigot, and Paper in a Forge mod.
 ## Current Fixes
 ### Server
 - Chest open and close sounds are no longer processed in the tile entity tick loop
