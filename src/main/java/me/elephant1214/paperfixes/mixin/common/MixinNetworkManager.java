@@ -13,10 +13,10 @@ import java.util.Queue;
 
 @Mixin(NetworkManager.class)
 public class MixinNetworkManager {
-    @SuppressWarnings("rawtypes")
     @Shadow
     @Final
-    private Queue outboundPacketsQueue;
+    private Queue<NetworkManager.InboundHandlerTuplePacketListener> outboundPacketsQueue;
+
     @Shadow
     private Channel channel;
 

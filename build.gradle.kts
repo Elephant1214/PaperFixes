@@ -1,48 +1,44 @@
 plugins {
 	idea
 	java
-	id("gg.essential.loom") version "0.10.0.+"
+	id("gg.essential.loom") version "1.2.+"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-version = "0.1.0"
+val modGroup: String by project
+val modBaseName: String by project
+version = "0.1.1"
+val modID = "paperfixes"
+base.archivesName.set(modBaseName)
+
+val tweakClass: String by project
+val mixinConfig: String by project
+val accessTransformer: String by project
 
 loom {
-    launchConfigs {
-        "client" {
-            property("mixin.debug.export", "true")
-            property("asmhelper.verbose", "true")
-            arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
-            arg("--mixin", "paperfixes.mixins.json")
-        }
-        "server" {
-            property("mixin.debug", "true")
-            property("asmhelper.verbose", "true")
-            arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
-            arg("--mixin", "paperfixes.mixins.json")
-        }
+    runs.all {
+        property("mixin.debug.export", "true")
+        property("asmhelper.verbose", "true")
+        property("--tweakClass", tweakClass)
+        property("--mixin", mixinConfig)
     }
-    runConfigs {
-        "client" {
-            isIdeConfigGenerated = true
-        }
-        "server" {
-            isIdeConfigGenerated = true
-        }
+    runConfigs.all {
+        isIdeConfigGenerated = true
     }
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
-        mixinConfig("paperfixes.mixins.json")
+        mixinConfig(mixinConfig)
+        accessTransformer("src/main/resources/$accessTransformer")
     }
     @Suppress("UnstableApiUsage")
     mixin {
-        defaultRefmapName.set("paperfixes-refmap.json")
+        defaultRefmapName.set("$modID-refmap.json")
     }
 }
 
 sourceSets.main {
-    output.setResourcesDir(file("$buildDir/classes/java/main"))
+    output.resourcesDir = file("$buildDir/classes/java/main")
 }
 
 val shadowImplementation: Configuration by configurations.creating {
@@ -65,6 +61,10 @@ dependencies {
         isTransitive = false
     }
     annotationProcessor("org.spongepowered:mixin:0.8.5")
+
+    // Workaround loom 1.2 bug
+    annotationProcessor("com.google.guava:guava:21.0")
+    annotationProcessor("com.google.code.gson:gson:2.2.4")
 }
 
 java {
@@ -75,31 +75,27 @@ tasks.withType(JavaCompile::class) {
     options.encoding = "UTF-8"
 }
 
-tasks.withType(Jar::class) {
-    archiveBaseName.set("PaperFixes")
-    archiveClassifier.set("sources")
-    manifest.attributes.run {
-        this["FMLCorePluginContainsFMLMod"] = "true"
-        this["ForceLoadAsMod"] = "true"
-        this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
-        this["MixinConfigs"] = "paperfixes.mixins.json"
-    }
+tasks.processResources {
+    rename("(.+_at.cfg)", "META-INF/$1")
 }
 
-val remapJar by tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
-    archiveClassifier.set("dep")
-    from(tasks.shadowJar)
-    input.set(tasks.shadowJar.get().archiveFile)
-    doLast {
-        println("Jar name: ${archiveFile.get().asFile}")
-    }
+tasks.remapJar {
+    inputFile.set(tasks.shadowJar.flatMap { it.archiveFile })
 }
 
 tasks.shadowJar {
-    archiveClassifier.set("dep-dev")
     configurations = listOf(shadowImplementation)
-    relocate("com.llamalad7.mixinextras", "me.elephant1214.paperfixes.mixinextras")
+    mergeServiceFiles()
+    relocate("com.llamalad7.mixinextras", "$modGroup.mixinextras")
     exclude("LICENSE_MixinExtras", "LICENSE.txt")
     exclude("**/module-info.class")
-    mergeServiceFiles()
+}
+
+tasks.jar {
+    archiveClassifier.set("dev")
+    manifest.attributes(mapOf(
+        "FMLAT" to "${modID}_at.cfg",
+        "TweakClass" to tweakClass,
+        "MixinConfigs" to mixinConfig
+    ))
 }
