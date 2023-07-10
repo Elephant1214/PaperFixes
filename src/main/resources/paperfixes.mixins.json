@@ -2,6 +2,7 @@
     "package": "me.elephant1214.paperfixes.mixin",
     "refmap": "paperfixes-refmap.json",
     "minVersion": "0.8",
+    "plugin": "me.elephant1214.paperfixes.mixin.PFMixinConfigPlugin",
     "required": true,
     "compatibilityLevel": "JAVA_8",
     "injectors": {
@@ -9,6 +10,7 @@
     },
     "mixins": [
         "common.MixinChunk",
+        "common.MixinChunkGeneratorOverworld",
         "common.MixinExplosion",
         "common.MixinExtendedBlockStorage",
         "common.MixinMinecraftServer",

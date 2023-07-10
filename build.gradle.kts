@@ -6,12 +6,12 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-version = "0.1.0-beta"
+version = "0.1.0"
 
 loom {
     launchConfigs {
         "client" {
-            property("mixin.debug", "true")
+            property("mixin.debug.export", "true")
             property("asmhelper.verbose", "true")
             arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
             arg("--mixin", "paperfixes.mixins.json")
@@ -51,6 +51,7 @@ val shadowImplementation: Configuration by configurations.creating {
 
 repositories {
     maven("https://repo.spongepowered.org/maven/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -58,6 +59,8 @@ dependencies {
     mappings("de.oceanlabs.mcp:mcp_snapshot:20171003-1.12")
     forge("net.minecraftforge:forge:1.12.2-14.23.5.2840")
 
+    shadowImplementation("com.github.LlamaLad7:MixinExtras:0.1.1")
+    annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1")
     shadowImplementation("org.spongepowered:mixin:0.8.5") {
         isTransitive = false
     }
@@ -74,7 +77,9 @@ tasks.withType(JavaCompile::class) {
 
 tasks.withType(Jar::class) {
     archiveBaseName.set("PaperFixes")
+    archiveClassifier.set("sources")
     manifest.attributes.run {
+        this["FMLCorePluginContainsFMLMod"] = "true"
         this["ForceLoadAsMod"] = "true"
         this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
         this["MixinConfigs"] = "paperfixes.mixins.json"
@@ -93,5 +98,8 @@ val remapJar by tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
 tasks.shadowJar {
     archiveClassifier.set("dep-dev")
     configurations = listOf(shadowImplementation)
+    relocate("com.llamalad7.mixinextras", "me.elephant1214.paperfixes.mixinextras")
+    exclude("LICENSE_MixinExtras", "LICENSE.txt")
     exclude("**/module-info.class")
+    mergeServiceFiles()
 }

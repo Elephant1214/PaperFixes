@@ -22,11 +22,11 @@ public class MixinExplosion {
     @Shadow
     @Final
     private Entity exploder;
-    @Shadow @Final private World world;
-    private final boolean cacheBlockDensities = PaperFixesConfig.cacheBlockDensities;
+    @Shadow
+    @Final
+    private World world;
 
-    @Redirect(
-            method = "doExplosionA",
+    @Redirect(method = "doExplosionA",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/World;getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/AxisAlignedBB;)Ljava/util/List;"
@@ -36,8 +36,7 @@ public class MixinExplosion {
         return world.getEntitiesInAABBexcluding(this.exploder, bb, entity -> EntitySelectors.CAN_AI_TARGET.apply(entity) && !entity.isDead);
     }
 
-    @Redirect(
-            method = "doExplosionA",
+    @Redirect(method = "doExplosionA",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/World;getBlockDensity(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/AxisAlignedBB;)F"
@@ -45,7 +44,7 @@ public class MixinExplosion {
     )
     private float paperfixes_blockDensityCache(World world, Vec3d vector, AxisAlignedBB aabb) {
         PaperFixes pfMod = PaperFixes.getInstance();
-        if (!this.cacheBlockDensities) {
+        if (!PaperFixesConfig.cacheBlockDensities) {
             return this.world.getBlockDensity(vector, aabb);
         }
         CacheKey key = new CacheKey((Explosion) (Object) this, aabb);

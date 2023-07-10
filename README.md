@@ -5,6 +5,7 @@ A collection of bug and performance fixes from CraftBukkit, Spigot, and Paper in
 - Chest open and close sounds are no longer processed in the tile entity tick loop
 ### Common (Integrated & Dedicated Server)
 - Invalid mob spawners are removed when detected
+- [MC-54738](https://bugs.mojang.com/browse/MC-54738)
 - Explosions no longer process dead entities
 - Block density is cached so that expensive lookup operations aren't done every time there's an explosion
 - [MC-80966](https://bugs.mojang.com/browse/MC-80966)

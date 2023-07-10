@@ -38,11 +38,7 @@ public abstract class MixinTileEntityChest {
     @Shadow
     public float prevLidAngle;
 
-    @Inject(
-            method = "update",
-            at = @At("HEAD"),
-            cancellable = true
-    )
+    @Inject(method = "update", at = @At("HEAD"), cancellable = true)
     private void paperfixes_noChestAnimationInTick(CallbackInfo ci) {
         if (this.numPlayersUsing < 0) {
             this.numPlayersUsing = 0;
@@ -51,13 +47,7 @@ public abstract class MixinTileEntityChest {
         ci.cancel();
     }
 
-    @Inject(
-            method = "openInventory",
-            at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/tileentity/TileEntityChest;world:Lnet/minecraft/world/World;"
-            )
-    )
+    @Inject(method = "openInventory", at = @At(value = "FIELD", target = "Lnet/minecraft/tileentity/TileEntityChest;world:Lnet/minecraft/world/World;"), allow = 1)
     private void paperfixes_chestOpenSound(EntityPlayer player, CallbackInfo ci) {
         BlockPos pos = ((TileEntityChest) (Object) this).getPos();
         World world = ((TileEntityChest) (Object) this).getWorld();
@@ -81,13 +71,7 @@ public abstract class MixinTileEntityChest {
         }
     }
 
-    @Inject(
-            method = "closeInventory",
-            at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/tileentity/TileEntityChest;world:Lnet/minecraft/world/World;"
-            )
-    )
+    @Inject(method = "closeInventory", at = @At(value = "FIELD", target = "Lnet/minecraft/tileentity/TileEntityChest;world:Lnet/minecraft/world/World;"), allow = 1)
     private void paperfixes_chestCloseSound(EntityPlayer player, CallbackInfo ci) {
         BlockPos pos = ((TileEntityChest) (Object) this).getPos();
         World world = ((TileEntityChest) (Object) this).getWorld();

@@ -11,13 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Teleporter.class)
 public class MixinTeleporter {
-    @Inject(
-            method = "placeInExistingPortal",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/network/NetHandlerPlayServer;setPlayerLocation(DDDFF)V"
-            )
-    )
+    @Inject(method = "placeInExistingPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetHandlerPlayServer;setPlayerLocation(DDDFF)V"))
     private void paperfixes_mc98153(Entity entityIn, float rotationYaw, CallbackInfoReturnable<Boolean> cir) {
         ((InvokerNetHandlerPlayServer) ((EntityPlayerMP) entityIn).connection).invokeCaptureCurrentPosition();
     }

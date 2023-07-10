@@ -20,10 +20,7 @@ public class MixinNetworkManager {
     @Shadow
     private Channel channel;
 
-    @Inject(
-            method = "checkDisconnected",
-            at = @At("RETURN")
-    )
+    @Inject(method = "checkDisconnected", at = @At("RETURN"))
     private void paperfixes_clearPacketQueueOnDisconnect(CallbackInfo ci) {
         if (this.channel != null && !this.channel.isOpen() && !this.outboundPacketsQueue.isEmpty()) {
             this.outboundPacketsQueue.clear();

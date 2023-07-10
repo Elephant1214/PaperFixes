@@ -14,8 +14,9 @@ public class MixinMinecraftServer {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/profiler/Profiler;endSection()V",
-                    opcode = 3
-            )
+                    ordinal = 3
+            ),
+            allow = 1
     )
     private void paperfixes_clearExplosionDensityCache(CallbackInfo ci) {
         PaperFixes.getInstance().explosionDensityCache.clear();
