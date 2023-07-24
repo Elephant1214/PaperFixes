@@ -19,6 +19,6 @@ public class MixinMinecraftServer {
             allow = 1
     )
     private void paperfixes_clearExplosionDensityCache(CallbackInfo ci) {
-        PaperFixes.getInstance().explosionDensityCache.clear();
+        PaperFixes.explosionDensityCache.clear();
     }
 }

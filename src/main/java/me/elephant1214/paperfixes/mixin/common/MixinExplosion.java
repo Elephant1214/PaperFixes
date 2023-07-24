@@ -43,15 +43,14 @@ public class MixinExplosion {
             )
     )
     private float paperfixes_blockDensityCache(World world, Vec3d vector, AxisAlignedBB aabb) {
-        PaperFixes pfMod = PaperFixes.getInstance();
         if (!PaperFixesConfig.cacheBlockDensities) {
             return this.world.getBlockDensity(vector, aabb);
         }
         CacheKey key = new CacheKey((Explosion) (Object) this, aabb);
-        Float blockDensity = pfMod.explosionDensityCache.get(key);
+        Float blockDensity = PaperFixes.explosionDensityCache.get(key);
         if (blockDensity == null) {
             blockDensity = this.world.getBlockDensity(vector, aabb);
-            pfMod.explosionDensityCache.put(key, blockDensity);
+            PaperFixes.explosionDensityCache.put(key, blockDensity);
         }
         return blockDensity;
     }

@@ -8,7 +8,7 @@ plugins {
 
 val modGroup: String by project
 val modBaseName: String by project
-version = "0.1.1"
+version = "0.1.2"
 val modID = "paperfixes"
 base.archivesName.set(modBaseName)
 
