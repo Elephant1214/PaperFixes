@@ -20,7 +20,7 @@ public class CommandTPS extends CommandBase {
 
     @Override
     public @NotNull String getUsage(@NotNull ICommandSender sender) {
-        return "paperfixes.commands.tps.usage";
+        return "/tps";
     }
 
     @Override
