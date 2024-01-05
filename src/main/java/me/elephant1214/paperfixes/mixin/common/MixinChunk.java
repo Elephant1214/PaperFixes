@@ -25,7 +25,7 @@ public abstract class MixinChunk {
             method = "addTileEntity(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/tileentity/TileEntity;)V",
             at = @At("RETURN")
     )
-    private void paperfixes_removeInvalidMobSpawners(BlockPos pos, TileEntity tileEntityIn, CallbackInfo ci) {
+    private void removeInvalidMobSpawners(BlockPos pos, TileEntity tileEntityIn, CallbackInfo ci) {
         if (tileEntityIn instanceof TileEntityMobSpawner && !(((Chunk) (Object) this).getBlockState(pos).getBlock() instanceof BlockMobSpawner)) {
             PaperFixes.LOGGER.warn("Removed invalid mob spawner at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
             this.tileEntities.remove(pos);

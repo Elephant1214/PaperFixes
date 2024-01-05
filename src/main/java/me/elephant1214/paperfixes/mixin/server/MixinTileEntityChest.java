@@ -35,20 +35,16 @@ public abstract class MixinTileEntityChest {
     @Shadow
     public TileEntityChest adjacentChestZPos;
 
-    @Shadow
-    public float prevLidAngle;
-
+    /**
+     * @reason We never want this to run. I'm not even sure what would happen if it did other than problems.
+     */
     @Inject(method = "update", at = @At("HEAD"), cancellable = true)
-    private void paperfixes_noChestAnimationInTick(CallbackInfo ci) {
-        if (this.numPlayersUsing < 0) {
-            this.numPlayersUsing = 0;
-        }
-        this.prevLidAngle = this.lidAngle;
+    private void noChestAnimationInTick(CallbackInfo ci) {
         ci.cancel();
     }
 
     @Inject(method = "openInventory", at = @At(value = "FIELD", target = "Lnet/minecraft/tileentity/TileEntityChest;world:Lnet/minecraft/world/World;"), allow = 1)
-    private void paperfixes_chestOpenSound(EntityPlayer player, CallbackInfo ci) {
+    private void handleOpenChest(EntityPlayer player, CallbackInfo ci) {
         BlockPos pos = ((TileEntityChest) (Object) this).getPos();
         World world = ((TileEntityChest) (Object) this).getWorld();
         this.checkForAdjacentChests();
@@ -72,7 +68,7 @@ public abstract class MixinTileEntityChest {
     }
 
     @Inject(method = "closeInventory", at = @At(value = "FIELD", target = "Lnet/minecraft/tileentity/TileEntityChest;world:Lnet/minecraft/world/World;"), allow = 1)
-    private void paperfixes_chestCloseSound(EntityPlayer player, CallbackInfo ci) {
+    private void handleCloseChest(EntityPlayer player, CallbackInfo ci) {
         BlockPos pos = ((TileEntityChest) (Object) this).getPos();
         World world = ((TileEntityChest) (Object) this).getWorld();
 

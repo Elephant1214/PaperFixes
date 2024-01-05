@@ -32,7 +32,7 @@ public class MixinExplosion {
                     target = "Lnet/minecraft/world/World;getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/AxisAlignedBB;)Ljava/util/List;"
             )
     )
-    private List<Entity> paperfixes_fixExplosionsProcessingDeadEntities(World world, Entity entityIn, AxisAlignedBB bb) {
+    private List<Entity> fixExplosionsProcessingDeadEntities(World world, Entity entityIn, AxisAlignedBB bb) {
         return world.getEntitiesInAABBexcluding(this.exploder, bb, entity -> EntitySelectors.CAN_AI_TARGET.apply(entity) && !entity.isDead);
     }
 
@@ -42,7 +42,7 @@ public class MixinExplosion {
                     target = "Lnet/minecraft/world/World;getBlockDensity(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/AxisAlignedBB;)F"
             )
     )
-    private float paperfixes_blockDensityCache(World world, Vec3d vector, AxisAlignedBB aabb) {
+    private float blockDensityCache(World world, Vec3d vector, AxisAlignedBB aabb) {
         if (!PaperFixesConfig.cacheBlockDensities) {
             return this.world.getBlockDensity(vector, aabb);
         }

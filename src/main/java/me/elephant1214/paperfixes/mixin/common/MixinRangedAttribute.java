@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RangedAttribute.class)
 public class MixinRangedAttribute {
     @Inject(method = "clampValue", at = @At("HEAD"), cancellable = true)
-    private void paperfixes_mc133373(double value, CallbackInfoReturnable<Double> cir) {
+    private void mc133373(double value, CallbackInfoReturnable<Double> cir) {
         if (value != value) {
             cir.setReturnValue(((RangedAttribute) (Object) this).getDefaultValue());
             cir.cancel();

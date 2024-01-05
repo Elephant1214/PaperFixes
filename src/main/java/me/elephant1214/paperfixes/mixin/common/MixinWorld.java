@@ -16,12 +16,12 @@ import java.util.Objects;
 @Mixin(World.class)
 public abstract class MixinWorld {
     @ModifyExpressionValue(method = "updateEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", ordinal = 1))
-    private Iterator<TileEntity> paperfixes_handleNullTileEntities(Iterator<TileEntity> instance) {
+    private Iterator<TileEntity> handleNullTileEntities(Iterator<TileEntity> instance) {
         return Iterators.filter(instance, Objects::nonNull);
     }
 
     @Inject(method = "isSpawnChunk", at = @At("HEAD"), cancellable = true)
-    private void paperfixes_keepSpawnInMemory(int x, int z, CallbackInfoReturnable<Boolean> cir) {
+    private void keepSpawnInMemory(int x, int z, CallbackInfoReturnable<Boolean> cir) {
         if (!PaperFixesConfig.keepSpawnInMemory) {
             cir.setReturnValue(false);
             cir.cancel();

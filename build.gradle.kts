@@ -1,16 +1,15 @@
 plugins {
-	idea
-	java
-	id("gg.essential.loom") version "1.2.+"
+    idea
+    java
+    id("gg.essential.loom") version "1.3.+"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 val modGroup: String by project
-val modBaseName: String by project
+val modName: String by project
 version = "0.1.2"
 val modID = "paperfixes"
-base.archivesName.set(modBaseName)
 
 val tweakClass: String by project
 val mixinConfig: String by project
@@ -41,7 +40,7 @@ sourceSets.main {
     output.resourcesDir = file("$buildDir/classes/java/main")
 }
 
-val shadowImplementation: Configuration by configurations.creating {
+val shade: Configuration by configurations.creating {
     configurations.implementation.get().extendsFrom(this)
 }
 
@@ -52,12 +51,12 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:1.12.2")
-    mappings("de.oceanlabs.mcp:mcp_snapshot:20171003-1.12")
+    mappings("de.oceanlabs.mcp:mcp_stable:39-1.12")
     forge("net.minecraftforge:forge:1.12.2-14.23.5.2840")
 
-    shadowImplementation("com.github.LlamaLad7:MixinExtras:0.1.1")
+    shade("com.github.LlamaLad7:MixinExtras:0.1.1")
     annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1")
-    shadowImplementation("org.spongepowered:mixin:0.8.5") {
+    shade("org.spongepowered:mixin:0.8.5") {
         isTransitive = false
     }
     annotationProcessor("org.spongepowered:mixin:0.8.5")
@@ -67,35 +66,44 @@ dependencies {
     annotationProcessor("com.google.code.gson:gson:2.2.4")
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
-}
-
-tasks.withType(JavaCompile::class) {
+tasks.withType<JavaCompile> {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
     options.encoding = "UTF-8"
+    options.release.set(8)
 }
 
-tasks.processResources {
-    rename("(.+_at.cfg)", "META-INF/$1")
+java {
+    withSourcesJar()
 }
 
-tasks.remapJar {
-    inputFile.set(tasks.shadowJar.flatMap { it.archiveFile })
+tasks {
+    processResources {
+        rename("(.+_at.cfg)", "META-INF/$1")
+    }
+    jar {
+        archiveClassifier.set("thin")
+        manifest.attributes(
+            mapOf(
+                "ForceLoadAsMod" to true,
+                "FMLAT" to "${modID}_at.cfg",
+                "TweakClass" to tweakClass,
+                "MixinConfigs" to mixinConfig
+            )
+        )
+        dependsOn(shadowJar)
+    }
+    remapJar {
+        inputFile.set(shadowJar.get().archiveFile)
+    }
+    shadowJar {
+        archiveClassifier.set("dev")
+        configurations = listOf(shade)
+        relocate("com.llamalad7.mixinextras", "$modGroup.mixinextras")
+        rename("LICENSE.txt", "LICENSE_Mixin.txt")
+        exclude("module-info.class")
+        mergeServiceFiles()
+    }
 }
 
-tasks.shadowJar {
-    configurations = listOf(shadowImplementation)
-    mergeServiceFiles()
-    relocate("com.llamalad7.mixinextras", "$modGroup.mixinextras")
-    exclude("LICENSE_MixinExtras", "LICENSE.txt")
-    exclude("**/module-info.class")
-}
-
-tasks.jar {
-    archiveClassifier.set("dev")
-    manifest.attributes(mapOf(
-        "FMLAT" to "${modID}_at.cfg",
-        "TweakClass" to tweakClass,
-        "MixinConfigs" to mixinConfig
-    ))
-}
+tasks.assemble.get().dependsOn(tasks.remapJar)

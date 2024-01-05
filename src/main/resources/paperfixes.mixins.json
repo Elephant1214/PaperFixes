@@ -1,13 +1,10 @@
 {
+    "required": true,
+    "minVersion": "0.8",
     "package": "me.elephant1214.paperfixes.mixin",
     "refmap": "paperfixes-refmap.json",
-    "minVersion": "0.8",
     "plugin": "me.elephant1214.paperfixes.mixin.PFMixinConfigPlugin",
-    "required": true,
     "compatibilityLevel": "JAVA_8",
-    "injectors": {
-        "defaultRequire": 1
-    },
     "mixins": [
         "common.MixinChunk",
         "common.MixinChunkGeneratorOverworld",
@@ -23,5 +20,8 @@
     ],
     "server": [
         "server.MixinTileEntityChest"
-    ]
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
 }

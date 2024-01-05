@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = ExtendedBlockStorage.class, priority = 800)
 public class MixinExtendedBlockStorage {
     @Inject(method = "isEmpty", at = @At("HEAD"), cancellable = true)
-    private void paperfixes_mc80966(CallbackInfoReturnable<Boolean> cir) {
+    private void mc80966(CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(false);
         cir.cancel();
     }

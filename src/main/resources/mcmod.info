@@ -5,11 +5,10 @@
         "description": "A collection of bug and performance fixes from CraftBukkit, Spigot, and Paper in a Forge mod.",
         "version": "0.1.2",
         "mcversion": "1.12.2",
+        "logoFile": "assets/paperfixes/paperfixes-icon.png",
         "url": "https://github.com/Elephant1214/PaperFixes",
-        "updateUrl": "",
         "authorList": [
             "Elephant_1214"
-        ],
-        "logoFile": ""
+        ]
     }
 ]

@@ -9,14 +9,21 @@ public class PaperFixesConfig {
     @Config.Name("keepSpawnLoaded")
     @Config.Comment({
             "Whether spawn chunks should always be loaded.",
-            "Turn this off if you don't have things like mob farms at spawn so that you aren't wasting resources. " +
-                    "See the README on GitHub for a more in-depth explanation."
+            "Turn this off if you don't have things like mob farms at spawn so that you aren't wasting resources.",
+            "See the README on GitHub for a more in-depth explanation."
     })
     public static boolean keepSpawnInMemory = true;
 
     @Config.RequiresMcRestart
-    @Config.Comment({
+    @Config.Comment(
             "Whether block densities should be cached to make explosion calculations faster."
-    })
+    )
     public static boolean cacheBlockDensities = true;
+
+    @Config.RequiresMcRestart
+    @Config.Comment({
+            "Whether the tick loop should be stopped from sleeping when you receive a \"Can't keep up! Is the server overloaded?\" message " +
+                    "and instead catch up as quickly as possible."
+    })
+    public static boolean noTickLoopSleepOnLag = true;
 }

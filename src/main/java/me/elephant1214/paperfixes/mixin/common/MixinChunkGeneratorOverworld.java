@@ -12,7 +12,7 @@ public class MixinChunkGeneratorOverworld {
             at = @At(value = "FIELD", target = "Lnet/minecraft/world/gen/ChunkGeneratorOverworld;biomeWeights:[F"),
             index = 5, allow = 1
     )
-    private float paperfixes_mc54738(float f5) {
+    private float mc54738(float f5) {
         return Math.max(f5, -1.8F);
     }
 }
