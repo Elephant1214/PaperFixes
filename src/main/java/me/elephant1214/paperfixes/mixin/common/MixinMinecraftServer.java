@@ -95,7 +95,7 @@ public abstract class MixinMinecraftServer {
 
                 this.paperFixes$nextTickTime = getNanos();
 
-                // long tickSection = getNanos(), curTime;
+                long tickSection = getNanos(), curTime;
                 while (this.serverRunning) {
                     this.currentTime = getMillis();
                     long timeToNext = getNanos() - this.paperFixes$nextTickTime;
@@ -119,16 +119,16 @@ public abstract class MixinMinecraftServer {
                         }
                     }
 
-                    // if (++currentTick % TARGET_TPS == 0) {
-                    //     curTime = getNanos();
-                    //     final long diff = curTime - tickSection;
-                    //     BigDecimal currentTps = TPS_BASE.divide(new BigDecimal(diff), 30, HALF_UP);
-                    //     TPS_5S.add(currentTps, diff);
-                    //     TPS_1.add(currentTps, diff);
-                    //     TPS_5.add(currentTps, diff);
-                    //     TPS_15.add(currentTps, diff);
-                    //     tickSection = curTime;
-                    // }
+                    if (++currentTick % TARGET_TPS == 0) {
+                        curTime = getNanos();
+                        final long diff = curTime - tickSection;
+                        BigDecimal currentTps = TPS_BASE.divide(new BigDecimal(diff), 30, HALF_UP);
+                        TPS_5S.add(currentTps, diff);
+                        TPS_1.add(currentTps, diff);
+                        TPS_5.add(currentTps, diff);
+                        TPS_15.add(currentTps, diff);
+                        tickSection = curTime;
+                    }
 
                     this.paperFixes$nextTickTime += NANOS_PER_TICK;
                     this.tick();
@@ -217,7 +217,8 @@ public abstract class MixinMinecraftServer {
             at = @At(value = "INVOKE",
                     target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
                     shift = At.Shift.AFTER,
-                    ordinal = 0)
+                    ordinal = 0,
+                    remap = false)
     )
     private void clearExplosionDensityCache(CallbackInfo ci) {
         PaperFixes.explosionDensityCache.clearCache();

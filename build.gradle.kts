@@ -8,7 +8,7 @@ plugins {
 
 val modGroup: String by project
 val modName: String by project
-version = "0.1.3-BETA"
+version = "0.2.0-BETA"
 val modID = "paperfixes"
 
 val tweakClass: String by project
