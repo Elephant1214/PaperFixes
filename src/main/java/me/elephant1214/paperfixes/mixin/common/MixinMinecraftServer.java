@@ -121,12 +121,12 @@ public abstract class MixinMinecraftServer {
 
                     if (++currentTick % TARGET_TPS == 0) {
                         curTime = getNanos();
-                        final long diff = curTime - tickSection;
-                        BigDecimal currentTps = TPS_BASE.divide(new BigDecimal(diff), 30, HALF_UP);
-                        TPS_5S.add(currentTps, diff);
-                        TPS_1.add(currentTps, diff);
-                        TPS_5.add(currentTps, diff);
-                        TPS_15.add(currentTps, diff);
+                        // final long diff = curTime - tickSection;
+                        // BigDecimal currentTps = TPS_BASE.divide(new BigDecimal(diff), 30, HALF_UP);
+                        // TPS_5S.add(currentTps, diff);
+                        // TPS_1.add(currentTps, diff);
+                        // TPS_5.add(currentTps, diff);
+                        // TPS_15.add(currentTps, diff);
                         tickSection = curTime;
                     }
 

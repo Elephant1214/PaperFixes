@@ -17,10 +17,10 @@ public class PaperFixes {
 
     public static ExplosionDensityCacheManager explosionDensityCache = null;
 
-    @Mod.EventHandler
-    public void serverStartingEvent(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandTPS());
-    }
+    // @Mod.EventHandler
+    // public void serverStartingEvent(FMLServerStartingEvent event) {
+    //     event.registerServerCommand(new CommandTPS());
+    // }
 
     public PaperFixes() {
         if (PaperFixesConfig.cacheBlockDensities) {
