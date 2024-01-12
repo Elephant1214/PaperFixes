@@ -22,7 +22,7 @@ please open an issue if you find any.
 - The new TPS command appears to be a bit inaccurate at the moment.
   The improved tick loop comes with a new command for viewing TPS, `/tps`.
   The command provides a quick overview of *average* TPS from the last five seconds,
-  one minute, five minutes, and fifteen minutes.~~
+  one minute, five minutes, and fifteen minutes.
 - Null (invalid or broken) tile entities that could exist when a world is having its entities updated are removed when detected
 - The ability to toggle [spawn chunks](https://minecraft.fandom.com/wiki/Spawn_chunk) if they're not being used. Read below to find out why you might not want them enabled.
     - Spawn chunks are a 25x25 area of chunks around spawn that is always loaded by the game.
