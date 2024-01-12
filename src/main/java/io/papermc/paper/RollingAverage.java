@@ -1,7 +1,7 @@
 package io.papermc.paper;
 
-import static me.elephant1214.paperfixes.TickManager.NANOS_PER_SECOND;
-import static me.elephant1214.paperfixes.TickManager.TARGET_TPS;
+import static me.elephant1214.paperfixes.manager.TickManager.NANOS_PER_SECOND;
+import static me.elephant1214.paperfixes.manager.TickManager.TARGET_TPS;
 
 public class RollingAverage {
     private final int size;

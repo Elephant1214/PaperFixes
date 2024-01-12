@@ -1,7 +1,7 @@
 package me.elephant1214.paperfixes.mixin.common;
 
 import me.elephant1214.paperfixes.PaperFixes;
-import me.elephant1214.paperfixes.TickManager;
+import me.elephant1214.paperfixes.manager.TickManager;
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.network.ServerStatusResponse;
@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static java.math.RoundingMode.HALF_UP;
-import static me.elephant1214.paperfixes.TickManager.*;
+import static me.elephant1214.paperfixes.manager.TickManager.*;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer {
@@ -78,8 +78,9 @@ public abstract class MixinMinecraftServer {
     public abstract void systemExitNow();
 
     /**
-     * @author e
-     * @reason lazy
+     * @author Elephant_1214
+     * @reason I don't want to fight with manually injecting this yet, and I'm not sure
+     * if it's even possible
      */
     @Overwrite(remap = false)
     public void run() {
@@ -97,18 +98,24 @@ public abstract class MixinMinecraftServer {
                 long tickSection = getNanos(), curTime;
                 while (this.serverRunning) {
                     this.currentTime = getMillis();
-                    long i = NANOS_PER_TICK;
-                    long j = getNanos() - this.paperFixes$nextTickTime;
+                    long timeToNext = getNanos() - this.paperFixes$nextTickTime;
+                    long ticksBehind = timeToNext / NANOS_PER_TICK;
 
-                    if (j > OVERLOADED_THRESHOLD + 20L * i && this.paperFixes$nextTickTime - this.paperFixes$lastOverloadWarning >= OVERLOADED_WARNING_INTERVAL + 100L * i) {
-                        long k = j / i;
+                    if (PaperFixesConfig.tickLoop.keepTpsAtOrAbove19 && !PaperFixesConfig.tickLoop.noTickLoopSleepOnLag && ticksBehind > 1 && !this.paperFixes$forceTicks) {
+                        this.paperFixes$forceTicks = true;
+                        this.paperFixes$catchupTicks = ticksBehind;
+                    }
 
-                        LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", j / NANOS_PER_MILLI, k);
-                        this.paperFixes$nextTickTime += k * i;
-                        this.paperFixes$lastOverloadWarning = this.paperFixes$nextTickTime;
-                        if (PaperFixesConfig.noTickLoopSleepOnLag) {
+                    if (timeToNext > OVERLOADED_THRESHOLD + 20L * NANOS_PER_TICK) {
+                        if (this.paperFixes$nextTickTime - this.paperFixes$lastOverloadWarning >= OVERLOADED_WARNING_INTERVAL + 100L * NANOS_PER_TICK) {
+                            LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", timeToNext / NANOS_PER_MILLI, ticksBehind);
+                            this.paperFixes$nextTickTime += ticksBehind * NANOS_PER_TICK;
+                            this.paperFixes$lastOverloadWarning = this.paperFixes$nextTickTime;
+                        }
+
+                        if (PaperFixesConfig.tickLoop.noTickLoopSleepOnLag && !PaperFixesConfig.tickLoop.keepTpsAtOrAbove19) {
                             this.paperFixes$forceTicks = true;
-                            this.paperFixes$catchupTicks = k;
+                            this.paperFixes$catchupTicks = ticksBehind;
                         }
                     }
 
@@ -123,10 +130,10 @@ public abstract class MixinMinecraftServer {
                         tickSection = curTime;
                     }
 
-                    this.paperFixes$nextTickTime += i;
+                    this.paperFixes$nextTickTime += NANOS_PER_TICK;
                     this.tick();
 
-                    if (PaperFixesConfig.noTickLoopSleepOnLag && this.paperFixes$forceTicks && paperFixes$catchupTicks > 0) {
+                    if ((PaperFixesConfig.tickLoop.keepTpsAtOrAbove19 || PaperFixesConfig.tickLoop.noTickLoopSleepOnLag) && this.paperFixes$forceTicks && paperFixes$catchupTicks > 0) {
                         this.paperFixes$nextTickTime = getNanos();
                         if (--this.paperFixes$catchupTicks == 0) {
                             this.paperFixes$forceTicks = false;
@@ -205,8 +212,14 @@ public abstract class MixinMinecraftServer {
         this.paperFixes$forceTicks = false;
     }
 
-    @Inject(method = "updateTimeLightAndEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V", ordinal = 3), allow = 1)
+    @Inject(
+            method = "stopServer",
+            at = @At(value = "INVOKE",
+                    target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
+                    shift = At.Shift.AFTER,
+                    ordinal = 0)
+    )
     private void clearExplosionDensityCache(CallbackInfo ci) {
-        PaperFixes.explosionDensityCache.clear();
+        PaperFixes.explosionDensityCache.clearCache();
     }
 }

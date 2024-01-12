@@ -1,6 +1,6 @@
 package me.elephant1214.paperfixes.command;
 
-import me.elephant1214.paperfixes.TickManager;
+import me.elephant1214.paperfixes.manager.TickManager;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;

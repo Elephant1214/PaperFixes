@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes;
+package me.elephant1214.paperfixes.manager;
 
 import io.papermc.paper.RollingAverage;
 

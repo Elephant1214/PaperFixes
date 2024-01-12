@@ -1,13 +1,12 @@
 package me.elephant1214.paperfixes;
 
-import io.papermc.paper.CacheKey;
 import me.elephant1214.paperfixes.command.CommandTPS;
+import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
+import me.elephant1214.paperfixes.manager.ExplosionDensityCacheManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.HashMap;
 
 @Mod(name = PaperFixes.NAME, modid = PaperFixes.MOD_ID, version = PaperFixes.VERSION, acceptedMinecraftVersions = "1.12.2", acceptableRemoteVersions = "*")
 public class PaperFixes {
@@ -16,7 +15,7 @@ public class PaperFixes {
     public static final String VERSION = "0.1.3-BETA";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    public static final HashMap<CacheKey, Float> explosionDensityCache = new HashMap<>();
+    public static ExplosionDensityCacheManager explosionDensityCache = null;
 
     @Mod.EventHandler
     public void serverStartingEvent(FMLServerStartingEvent event) {
@@ -24,5 +23,8 @@ public class PaperFixes {
     }
 
     public PaperFixes() {
+        if (PaperFixesConfig.cacheBlockDensities) {
+            explosionDensityCache = new ExplosionDensityCacheManager();
+        }
     }
 }

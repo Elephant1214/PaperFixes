@@ -27,8 +27,7 @@ public class MixinExplosion {
     private World world;
 
     @Redirect(method = "doExplosionA",
-            at = @At(
-                    value = "INVOKE",
+            at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/World;getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/AxisAlignedBB;)Ljava/util/List;"
             )
     )
@@ -37,20 +36,18 @@ public class MixinExplosion {
     }
 
     @Redirect(method = "doExplosionA",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;getBlockDensity(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/AxisAlignedBB;)F"
-            )
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/World;getBlockDensity(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/AxisAlignedBB;)F")
     )
     private float blockDensityCache(World world, Vec3d vector, AxisAlignedBB aabb) {
         if (!PaperFixesConfig.cacheBlockDensities) {
             return this.world.getBlockDensity(vector, aabb);
         }
         CacheKey key = new CacheKey((Explosion) (Object) this, aabb);
-        Float blockDensity = PaperFixes.explosionDensityCache.get(key);
+        Float blockDensity = PaperFixes.explosionDensityCache.getCached(key);
         if (blockDensity == null) {
             blockDensity = this.world.getBlockDensity(vector, aabb);
-            PaperFixes.explosionDensityCache.put(key, blockDensity);
+            PaperFixes.explosionDensityCache.addCached(key, blockDensity);
         }
         return blockDensity;
     }

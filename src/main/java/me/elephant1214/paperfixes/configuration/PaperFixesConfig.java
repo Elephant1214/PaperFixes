@@ -20,10 +20,22 @@ public class PaperFixesConfig {
     )
     public static boolean cacheBlockDensities = true;
 
-    @Config.RequiresMcRestart
-    @Config.Comment({
-            "Whether the tick loop should be stopped from sleeping when you receive a \"Can't keep up! Is the server overloaded?\" message " +
-                    "and instead catch up as quickly as possible."
-    })
-    public static boolean noTickLoopSleepOnLag = true;
+    @Config.Name("Tick Loop")
+    public static TickLoopConfig tickLoop = new TickLoopConfig();
+
+    public static class TickLoopConfig {
+        @Config.RequiresMcRestart
+        @Config.Comment({"Whether the tick loop should be stopped from sleeping when you receive a \"Can't keep up! Is the server overloaded?\" message " +
+                "and instead tick as quickly as possible to get back to 20 TPS.",
+                "Incompatible with keepTpsAtOrAbove19."
+        })
+        public boolean noTickLoopSleepOnLag = false;
+
+        @Config.RequiresMcRestart
+        @Config.Comment({
+                "Whether the tick loop should be stopped from sleeping when TPS drops below 19 and instead tick as quickly as possible to try to get back to 20.",
+                "Incompatible with noTickLoopSleepOnLag."
+        })
+        public boolean keepTpsAtOrAbove19 = true;
+    }
 }

@@ -15,7 +15,13 @@ import java.util.Objects;
 
 @Mixin(World.class)
 public abstract class MixinWorld {
-    @ModifyExpressionValue(method = "updateEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", ordinal = 1))
+    @SuppressWarnings("unused")
+    @ModifyExpressionValue(
+            method = "updateEntities",
+            at = @At(value = "INVOKE",
+                    target = "Ljava/util/List;iterator()Ljava/util/Iterator;",
+                    ordinal = 1)
+    )
     private Iterator<TileEntity> handleNullTileEntities(Iterator<TileEntity> instance) {
         return Iterators.filter(instance, Objects::nonNull);
     }
