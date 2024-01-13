@@ -78,6 +78,8 @@ java {
 
 tasks {
     processResources {
+        rename("(.+_at.cfg)", "META-INF/$1")
+
         project.projectDir.walkTopDown().forEach { file ->
             if (file.name in listOf("mcmod.info", "PaperFixes.java")) {
                 println("Processing ${file.name}")
@@ -87,10 +89,9 @@ tasks {
                 file.writeText(content)
             }
         }
-        rename("(.+_at.cfg)", "META-INF/$1")
+        from(project.file("LICENSE")) { rename { "LICENSE_PaperFixes.txt" } }
     }
     jar {
-        archiveClassifier.set("thin")
         manifest.attributes(
             mapOf(
                 "ForceLoadAsMod" to true,
@@ -99,19 +100,14 @@ tasks {
                 "MixinConfigs" to mixinConfig
             )
         )
-        from(rootProject.file("LICENSE")) {
-            rename { "LICENSE_PaperFixes.txt" }
-        }
         dependsOn(shadowJar)
     }
     remapJar {
         inputFile.set(shadowJar.get().archiveFile)
     }
     shadowJar {
-        archiveClassifier.set("dev")
         configurations = listOf(shade)
         relocate("com.llamalad7.mixinextras", "$modGroup.mixinextras")
-        rename("LICENSE.txt", "LICENSE_Mixin.txt")
         exclude("module-info.class")
         mergeServiceFiles()
     }
