@@ -7,13 +7,12 @@ plugins {
 }
 
 val modGroup: String by project
-val modName: String by project
-version = "0.2.0-BETA"
-val modID = "paperfixes"
+val modID: String by project
+group = modGroup
+version = "0.2.1-BETA"
 
 val tweakClass: String by project
 val mixinConfig: String by project
-val accessTransformer: String by project
 
 loom {
     runs.all {
@@ -28,7 +27,7 @@ loom {
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
         mixinConfig(mixinConfig)
-        accessTransformer("src/main/resources/$accessTransformer")
+        accessTransformer("src/main/resources/${project.properties["accessTransformer"]}")
     }
     @Suppress("UnstableApiUsage")
     mixin {
@@ -50,9 +49,9 @@ repositories {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:1.12.2")
-    mappings("de.oceanlabs.mcp:mcp_stable:39-1.12")
-    forge("net.minecraftforge:forge:1.12.2-14.23.5.2840")
+    minecraft("com.mojang:minecraft:${project.properties["mcVersion"]}")
+    mappings("de.oceanlabs.mcp:${project.properties["mappings"]}")
+    forge("net.minecraftforge:forge:${project.properties["forgeVersion"]}")
 
     shade("com.github.LlamaLad7:MixinExtras:0.1.1")
     annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1")
@@ -61,7 +60,7 @@ dependencies {
     }
     annotationProcessor("org.spongepowered:mixin:0.8.5")
 
-    // Workaround loom 1.2 bug
+    // Workaround for Loom bug
     annotationProcessor("com.google.guava:guava:21.0")
     annotationProcessor("com.google.code.gson:gson:2.2.4")
 }
@@ -79,6 +78,15 @@ java {
 
 tasks {
     processResources {
+        project.projectDir.walkTopDown().forEach { file ->
+            if (file.name in listOf("mcmod.info", "PaperFixes.java")) {
+                println("Processing ${file.name}")
+                var content = file.readText()
+                content = content.replace(Regex("\"version\": \"[^\"]*\""), "\"version\": \"$version\"")
+                content = content.replace(Regex("VERSION = \"[^\"]*\";"), "VERSION = \"$version\";")
+                file.writeText(content)
+            }
+        }
         rename("(.+_at.cfg)", "META-INF/$1")
     }
     jar {
@@ -91,6 +99,9 @@ tasks {
                 "MixinConfigs" to mixinConfig
             )
         )
+        from(rootProject.file("LICENSE")) {
+            rename { "LICENSE_PaperFixes.txt" }
+        }
         dependsOn(shadowJar)
     }
     remapJar {
