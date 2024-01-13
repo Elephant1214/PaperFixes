@@ -1,6 +1,5 @@
 package me.elephant1214.paperfixes.mixin.common;
 
-import com.google.common.collect.Iterators;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import net.minecraft.tileentity.TileEntity;
@@ -23,7 +22,13 @@ public abstract class MixinWorld {
                     ordinal = 1)
     )
     private Iterator<TileEntity> handleNullTileEntities(Iterator<TileEntity> instance) {
-        return Iterators.filter(instance, Objects::nonNull);
+        while (instance.hasNext()) {
+            TileEntity element = instance.next();
+            if (Objects.isNull(element)) {
+                instance.remove();
+            }
+        }
+        return instance;
     }
 
     @Inject(method = "isSpawnChunk", at = @At("HEAD"), cancellable = true)
