@@ -5,10 +5,8 @@ please open an issue if you find any.
 
 ## Current Fixes
 
-### Dedicated Server
-- Chest open and close sounds are no longer processed in the tile entity tick loop
-
 ### Common (Integrated & Dedicated Server)
+- Chest open and close sounds are no longer processed in the tile entity tick loop
 - Invalid mob spawners are removed when detected
 - [MC-54738](https://bugs.mojang.com/browse/MC-54738)
 - Explosions no longer process dead entities
