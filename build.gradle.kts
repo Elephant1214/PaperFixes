@@ -9,7 +9,7 @@ plugins {
 val modGroup: String by project
 val modID: String by project
 group = modGroup
-version = "0.2.1-BETA"
+version = "0.2.2-BETA"
 
 val tweakClass: String by project
 val mixinConfig: String by project

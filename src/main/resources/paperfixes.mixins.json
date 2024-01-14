@@ -14,12 +14,10 @@
         "common.MixinNetworkManager",
         "common.MixinRangedAttribute",
         "common.MixinTeleporter",
+        "common.MixinTileEntityChest",
         "common.MixinWorld",
         "common.accessor.AccessorExplosion",
         "common.invoker.InvokerNetHandlerPlayServer"
-    ],
-    "server": [
-        "server.MixinTileEntityChest"
     ],
     "injectors": {
         "defaultRequire": 1

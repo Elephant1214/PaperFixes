@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.server;
+package me.elephant1214.paperfixes.mixin.common;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -43,7 +43,10 @@ public abstract class MixinTileEntityChest {
         ci.cancel();
     }
 
-    @Inject(method = "openInventory", at = @At(value = "FIELD", target = "Lnet/minecraft/tileentity/TileEntityChest;world:Lnet/minecraft/world/World;"), allow = 1)
+    @Inject(method = "openInventory",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V")
+    )
     private void handleOpenChest(EntityPlayer player, CallbackInfo ci) {
         BlockPos pos = ((TileEntityChest) (Object) this).getPos();
         World world = ((TileEntityChest) (Object) this).getWorld();
@@ -67,7 +70,10 @@ public abstract class MixinTileEntityChest {
         }
     }
 
-    @Inject(method = "closeInventory", at = @At(value = "FIELD", target = "Lnet/minecraft/tileentity/TileEntityChest;world:Lnet/minecraft/world/World;"), allow = 1)
+    @Inject(method = "closeInventory",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V")
+    )
     private void handleCloseChest(EntityPlayer player, CallbackInfo ci) {
         BlockPos pos = ((TileEntityChest) (Object) this).getPos();
         World world = ((TileEntityChest) (Object) this).getWorld();
