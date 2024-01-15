@@ -3,7 +3,7 @@ plugins {
     java
     id("gg.essential.loom") version "1.3.+"
     id("dev.architectury.architectury-pack200") version "0.1.3"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    // id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 val modGroup: String by project
@@ -18,8 +18,8 @@ loom {
     runs.all {
         property("mixin.debug.export", "true")
         property("asmhelper.verbose", "true")
-        property("--tweakClass", tweakClass)
-        property("--mixin", mixinConfig)
+        programArgs("--tweakClass", tweakClass)
+        programArgs("--mixin", "mixins.${modID}.json")
     }
     runConfigs.all {
         isIdeConfigGenerated = true
@@ -39,13 +39,12 @@ sourceSets.main {
     output.resourcesDir = file("$buildDir/classes/java/main")
 }
 
-val shade: Configuration by configurations.creating {
-    configurations.implementation.get().extendsFrom(this)
-}
+// val shade: Configuration by configurations.creating {
+//     configurations.implementation.get().extendsFrom(this)
+// }
 
 repositories {
-    maven("https://repo.spongepowered.org/maven/")
-    maven("https://jitpack.io")
+    maven("https://maven.cleanroommc.com/")
 }
 
 dependencies {
@@ -53,12 +52,16 @@ dependencies {
     mappings("de.oceanlabs.mcp:${project.properties["mappings"]}")
     forge("net.minecraftforge:forge:${project.properties["forgeVersion"]}")
 
-    shade("com.github.LlamaLad7:MixinExtras:0.1.1")
-    annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1")
-    shade("org.spongepowered:mixin:0.8.5") {
+    annotationProcessor("org.ow2.asm:asm-debug-all:5.2")
+    annotationProcessor("com.google.guava:guava:32.1.2-jre")
+    annotationProcessor("com.google.code.gson:gson:2.8.9")
+
+    implementation("zone.rong:mixinbooter:8.9") {
         isTransitive = false
     }
-    annotationProcessor("org.spongepowered:mixin:0.8.5")
+    annotationProcessor("zone.rong:mixinbooter:8.9") {
+        isTransitive = false
+    }
 
     // Workaround for Loom bug
     annotationProcessor("com.google.guava:guava:21.0")
@@ -100,17 +103,15 @@ tasks {
                 "MixinConfigs" to mixinConfig
             )
         )
-        dependsOn(shadowJar)
+        // dependsOn(shadowJar)
     }
-    remapJar {
-        inputFile.set(shadowJar.get().archiveFile)
-    }
-    shadowJar {
-        configurations = listOf(shade)
-        relocate("com.llamalad7.mixinextras", "$modGroup.mixinextras")
-        exclude("module-info.class")
-        mergeServiceFiles()
-    }
+    // remapJar {
+    //     inputFile.set(shadowJar.get().archiveFile)
+    // }
+    // shadowJar {
+    //     configurations = listOf(shade)
+    //     mergeServiceFiles()
+    // }
 }
 
 tasks.assemble.get().dependsOn(tasks.remapJar)

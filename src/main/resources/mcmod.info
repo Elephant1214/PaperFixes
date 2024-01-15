@@ -9,6 +9,9 @@
         "url": "https://github.com/Elephant1214/PaperFixes",
         "authorList": [
             "Elephant_1214"
+        ],
+        "dependencies": [
+            "mixinbooter"
         ]
     }
 ]
