@@ -1,4 +1,6 @@
 # PaperFixes
+**As of 0.3.0, MixinBooter is required.**
+
 A collection of bug and performance fixes from CraftBukkit, Spigot, and Paper in a Forge mod.\
 Keep in mind that this mod is very work-in-progress and bugs and incompatibilities could occur,
 please open an issue if you find any.
