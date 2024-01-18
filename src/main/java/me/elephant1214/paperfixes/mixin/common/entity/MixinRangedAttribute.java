@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common;
+package me.elephant1214.paperfixes.mixin.common.entity;
 
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import org.spongepowered.asm.mixin.Mixin;

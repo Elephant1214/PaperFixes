@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common;
+package me.elephant1214.paperfixes.mixin.common.network;
 
 import io.netty.channel.Channel;
 import net.minecraft.network.NetworkManager;

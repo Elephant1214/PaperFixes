@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common;
+package me.elephant1214.paperfixes.mixin.common.server;
 
 import me.elephant1214.paperfixes.PaperFixes;
 import me.elephant1214.paperfixes.manager.TickManager;
@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static java.math.RoundingMode.HALF_UP;
+import static me.elephant1214.paperfixes.PaperFixes.*;
 import static me.elephant1214.paperfixes.manager.TickManager.*;
 
 @Mixin(MinecraftServer.class)
@@ -86,6 +87,8 @@ public abstract class MixinMinecraftServer {
     public void run() {
         try {
             if (this.init()) {
+                PaperFixes.LOGGER.info("Using PaperFixes' enhanced tick loop, option: " + (PaperFixesConfig.tickLoop.keepTpsAtOrAbove19 ? "\"Keep TPS at or above 19\"" : "\"No tick loop sleep on lag\""));
+
                 FMLCommonHandler.instance().handleServerStarted();
                 this.currentTime = getMillis();
 
@@ -218,9 +221,10 @@ public abstract class MixinMinecraftServer {
                     target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
                     shift = At.Shift.AFTER,
                     ordinal = 0,
-                    remap = false)
+                    remap = false
+            )
     )
     private void clearExplosionDensityCache(CallbackInfo ci) {
-        PaperFixes.explosionDensityCache.clearCache();
+        explosionDensityCache.clearCache();
     }
 }

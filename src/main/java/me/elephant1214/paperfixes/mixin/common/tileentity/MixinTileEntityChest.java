@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common;
+package me.elephant1214.paperfixes.mixin.common.tileentity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -43,9 +43,12 @@ public abstract class MixinTileEntityChest {
         ci.cancel();
     }
 
-    @Inject(method = "openInventory",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V")
+    @Inject(
+            method = "openInventory",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V"
+            )
     )
     private void handleOpenChest(EntityPlayer player, CallbackInfo ci) {
         BlockPos pos = ((TileEntityChest) (Object) this).getPos();

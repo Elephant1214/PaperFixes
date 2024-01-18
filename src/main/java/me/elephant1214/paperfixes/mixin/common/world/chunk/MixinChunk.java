@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common;
+package me.elephant1214.paperfixes.mixin.common.world.chunk;
 
 import me.elephant1214.paperfixes.PaperFixes;
 import net.minecraft.block.BlockMobSpawner;

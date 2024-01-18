@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common.accessor;
+package me.elephant1214.paperfixes.mixin.common.world.accessor;
 
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;

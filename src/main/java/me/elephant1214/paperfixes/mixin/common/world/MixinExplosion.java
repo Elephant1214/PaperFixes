@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common;
+package me.elephant1214.paperfixes.mixin.common.world;
 
 import io.papermc.paper.CacheKey;
 import me.elephant1214.paperfixes.PaperFixes;
@@ -26,8 +26,10 @@ public class MixinExplosion {
     @Final
     private World world;
 
-    @Redirect(method = "doExplosionA",
-            at = @At(value = "INVOKE",
+    @Redirect(
+            method = "doExplosionA",
+            at = @At(
+                    value = "INVOKE",
                     target = "Lnet/minecraft/world/World;getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/AxisAlignedBB;)Ljava/util/List;"
             )
     )
@@ -35,8 +37,10 @@ public class MixinExplosion {
         return world.getEntitiesInAABBexcluding(this.exploder, bb, entity -> EntitySelectors.CAN_AI_TARGET.apply(entity) && !entity.isDead);
     }
 
-    @Redirect(method = "doExplosionA",
-            at = @At(value = "INVOKE",
+    @Redirect(
+            method = "doExplosionA",
+            at = @At(
+                    value = "INVOKE",
                     target = "Lnet/minecraft/world/World;getBlockDensity(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/AxisAlignedBB;)F")
     )
     private float blockDensityCache(World world, Vec3d vector, AxisAlignedBB aabb) {

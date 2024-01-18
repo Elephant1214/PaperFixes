@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common;
+package me.elephant1214.paperfixes.mixin.common.world;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
@@ -19,7 +19,9 @@ public abstract class MixinWorld {
             method = "updateEntities",
             at = @At(value = "INVOKE",
                     target = "Ljava/util/List;iterator()Ljava/util/Iterator;",
-                    ordinal = 1)
+                    ordinal = 1,
+                    remap = false
+            )
     )
     private Iterator<TileEntity> handleNullTileEntities(Iterator<TileEntity> instance) {
         while (instance.hasNext()) {

@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common;
+package me.elephant1214.paperfixes.mixin.common.world.chunk;
 
 import net.minecraft.world.gen.ChunkGeneratorOverworld;
 import org.spongepowered.asm.mixin.Mixin;
@@ -9,7 +9,10 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class MixinChunkGeneratorOverworld {
     @ModifyVariable(
             method = "generateHeightmap",
-            at = @At(value = "FIELD", target = "Lnet/minecraft/world/gen/ChunkGeneratorOverworld;biomeWeights:[F"),
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/world/gen/ChunkGeneratorOverworld;biomeWeights:[F"
+            ),
             index = 5, allow = 1
     )
     private float mc54738(float f5) {

@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common.invoker;
+package me.elephant1214.paperfixes.mixin.common.network.invoker;
 
 import net.minecraft.network.NetHandlerPlayServer;
 import org.spongepowered.asm.mixin.Mixin;

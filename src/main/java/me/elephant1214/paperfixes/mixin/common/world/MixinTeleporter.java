@@ -1,6 +1,6 @@
-package me.elephant1214.paperfixes.mixin.common;
+package me.elephant1214.paperfixes.mixin.common.world;
 
-import me.elephant1214.paperfixes.mixin.common.invoker.InvokerNetHandlerPlayServer;
+import me.elephant1214.paperfixes.mixin.common.network.invoker.InvokerNetHandlerPlayServer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.Teleporter;
@@ -13,8 +13,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinTeleporter {
     @Inject(
             method = "placeInExistingPortal",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/network/NetHandlerPlayServer;setPlayerLocation(DDDFF)V")
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/network/NetHandlerPlayServer;setPlayerLocation(DDDFF)V"
+            )
     )
     private void mc98153(Entity entityIn, float rotationYaw, CallbackInfoReturnable<Boolean> cir) {
         ((InvokerNetHandlerPlayServer) ((EntityPlayerMP) entityIn).connection).invokeCaptureCurrentPosition();
