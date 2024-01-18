@@ -30,9 +30,8 @@ please open an issue if you find any.
     - This is the equivalent of three and a half players' worth of ticked chunks if you use the default ten-chunk (10x10 area) view distance.
 
 ## Incompatibilities
-- The improved tick loop appears to be somewhat compatible with the `mixin.bugfix.slow_tps_catchup` option from
-  [VintageFix](https://www.curseforge.com/minecraft/mc-mods/vintagefix),
-  but you should disable the option anyway as it will most likely conflict and create stability issues.
+- The improved tick loop is not compatible with the `mixin.bugfix.slow_tps_catchup` option from
+  [VintageFix](https://www.curseforge.com/minecraft/mc-mods/vintagefix) as they both overwrite the same method.
 - While working on a mod pack which included PaperFixes, there were odd chunk loading issues where chunks wouldn't load
   at all no matter what I did.
   I don't know what the actual cause of this is since it does not occur with the two mods alone,
