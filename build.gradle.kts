@@ -88,8 +88,14 @@ tasks {
     shadowJar {
         configurations = listOf(project.configurations.getByName("shadow"))
         relocate("com.llamalad7.mixinextras", "$modGroup.mixinextras")
-        exclude("module-info.class", "MixinLaunchPlugin.java", "MixinTransformationService.java", "ContainerHandleModLauncherEx.java")
         mergeServiceFiles()
+        exclude(
+            "module-info.class",
+            "org/spongepowered/asm/launch/MixinLaunchPlugin.class",
+            "org/spongepowered/asm/launch/MixinTransformationService.class",
+            "org/spongepowered/asm/launch/platform/container/ContainerHandleModLauncherEx.class",
+            "org/spongepowered/asm/launch/platform/container/ContainerHandleModLauncherEx\$SecureJarResource.class"
+        )
     }
     remapJar {
         inputFile.set(shadowJar.get().archiveFile)
