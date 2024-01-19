@@ -3,7 +3,7 @@ plugins {
     java
     id("gg.essential.loom") version "1.3.+"
     id("dev.architectury.architectury-pack200") version "0.1.3"
-    // id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.0"
 }
 
 val modGroup: String by project
@@ -16,10 +16,8 @@ val mixinConfig: String by project
 
 loom {
     runs.all {
+        programArgs("--tweakClass=$tweakClass", "--mixin.config=mixins.$modID.json")
         property("mixin.debug.export", "true")
-        property("asmhelper.verbose", "true")
-        programArgs("--tweakClass", tweakClass)
-        programArgs("--mixin", "mixins.${modID}.json")
     }
     runConfigs.all {
         isIdeConfigGenerated = true
@@ -39,12 +37,13 @@ sourceSets.main {
     output.resourcesDir = file("$buildDir/classes/java/main")
 }
 
-// val shade: Configuration by configurations.creating {
-//     configurations.implementation.get().extendsFrom(this)
-// }
+configurations.implementation {
+    extendsFrom(configurations.getByName("shadow"))
+}
 
 repositories {
-    maven("https://maven.cleanroommc.com/")
+    maven("https://repo.spongepowered.org/maven/")
+    mavenCentral()
 }
 
 dependencies {
@@ -52,24 +51,17 @@ dependencies {
     mappings("de.oceanlabs.mcp:${project.properties["mappings"]}")
     forge("net.minecraftforge:forge:${project.properties["forgeVersion"]}")
 
-    annotationProcessor("org.ow2.asm:asm-debug-all:5.2")
     annotationProcessor("com.google.guava:guava:32.1.2-jre")
     annotationProcessor("com.google.code.gson:gson:2.8.9")
 
-    implementation("zone.rong:mixinbooter:8.9") {
-        isTransitive = false
-    }
-    annotationProcessor("zone.rong:mixinbooter:8.9") {
-        isTransitive = false
-    }
-
-    // Workaround for Loom bug
-    annotationProcessor("com.google.guava:guava:21.0")
-    annotationProcessor("com.google.code.gson:gson:2.2.4")
+    shadow("io.github.llamalad7:mixinextras-common:0.3.5")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")
+    shadow("org.spongepowered:mixin:0.8.5")
+    annotationProcessor("org.spongepowered:mixin:0.8.5")
 }
 
 tasks.withType<JavaCompile> {
-    sourceCompatibility = "1.8"
+    sourceCompatibility  = "1.8"
     targetCompatibility = "1.8"
     options.encoding = "UTF-8"
     options.release.set(8)
@@ -94,24 +86,24 @@ tasks {
         }
         from(project.file("LICENSE")) { rename { "LICENSE_PaperFixes.txt" } }
     }
+    shadowJar {
+        configurations = listOf(project.configurations.getByName("shadow"))
+        relocate("com.llamalad7.mixinextras", "$modGroup.mixinextras")
+        exclude("module-info.class", "MixinLaunchPlugin.java", "MixinTransformationService.java", "ContainerHandleModLauncherEx.java")
+        mergeServiceFiles()
+    }
+    remapJar {
+        inputFile.set(shadowJar.get().archiveFile)
+    }
     jar {
         manifest.attributes(
-            mapOf(
-                "ForceLoadAsMod" to true,
-                "FMLAT" to "${modID}_at.cfg",
-                "TweakClass" to tweakClass,
-                "MixinConfigs" to mixinConfig
-            )
+            "ForceLoadAsMod" to true,
+            "FMLAT" to "${modID}_at.cfg",
+            "TweakClass" to tweakClass,
+            "MixinConfigs" to mixinConfig
         )
-        // dependsOn(shadowJar)
+        dependsOn(shadowJar)
     }
-    // remapJar {
-    //     inputFile.set(shadowJar.get().archiveFile)
-    // }
-    // shadowJar {
-    //     configurations = listOf(shade)
-    //     mergeServiceFiles()
-    // }
 }
 
 tasks.assemble.get().dependsOn(tasks.remapJar)
