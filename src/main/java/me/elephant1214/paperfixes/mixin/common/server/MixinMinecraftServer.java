@@ -80,14 +80,14 @@ public abstract class MixinMinecraftServer {
 
     /**
      * @author Elephant_1214
-     * @reason I don't want to fight with manually injecting this yet, and I'm not sure
+     * @reason I don't want to fight with manually injecting this, and I'm not sure
      * if it's even possible
      */
     @Overwrite(remap = false)
     public void run() {
         try {
             if (this.init()) {
-                PaperFixes.LOGGER.info("Using PaperFixes' enhanced tick loop, option: " + (PaperFixesConfig.tickLoop.keepTpsAtOrAbove19 ? "\"Keep TPS at or above 19\"" : "\"No tick loop sleep on lag\""));
+                PaperFixes.LOGGER.info("Using PaperFixes' enhanced tick loop, option: " + (PaperFixesConfig.enhancedTickLoop.keepTpsAtOrAbove19 ? "\"Keep TPS at or above 19\"" : "\"No tick loop sleep on lag\""));
 
                 FMLCommonHandler.instance().handleServerStarted();
                 this.currentTime = getMillis();
@@ -104,7 +104,7 @@ public abstract class MixinMinecraftServer {
                     long timeToNext = getNanos() - this.paperFixes$nextTickTime;
                     long ticksBehind = timeToNext / NANOS_PER_TICK;
 
-                    if (PaperFixesConfig.tickLoop.keepTpsAtOrAbove19 && !PaperFixesConfig.tickLoop.noTickLoopSleepOnLag && ticksBehind > 1 && !this.paperFixes$forceTicks) {
+                    if (PaperFixesConfig.enhancedTickLoop.keepTpsAtOrAbove19 && !PaperFixesConfig.enhancedTickLoop.noTickLoopSleepOnLag && ticksBehind > 1 && !this.paperFixes$forceTicks) {
                         this.paperFixes$forceTicks = true;
                         this.paperFixes$catchupTicks = ticksBehind;
                     }
@@ -116,7 +116,7 @@ public abstract class MixinMinecraftServer {
                             this.paperFixes$lastOverloadWarning = this.paperFixes$nextTickTime;
                         }
 
-                        if (PaperFixesConfig.tickLoop.noTickLoopSleepOnLag && !PaperFixesConfig.tickLoop.keepTpsAtOrAbove19) {
+                        if (PaperFixesConfig.enhancedTickLoop.noTickLoopSleepOnLag && !PaperFixesConfig.enhancedTickLoop.keepTpsAtOrAbove19) {
                             this.paperFixes$forceTicks = true;
                             this.paperFixes$catchupTicks = ticksBehind;
                         }
@@ -136,7 +136,7 @@ public abstract class MixinMinecraftServer {
                     this.paperFixes$nextTickTime += NANOS_PER_TICK;
                     this.tick();
 
-                    if ((PaperFixesConfig.tickLoop.keepTpsAtOrAbove19 || PaperFixesConfig.tickLoop.noTickLoopSleepOnLag) && this.paperFixes$forceTicks && paperFixes$catchupTicks > 0) {
+                    if ((PaperFixesConfig.enhancedTickLoop.keepTpsAtOrAbove19 || PaperFixesConfig.enhancedTickLoop.noTickLoopSleepOnLag) && this.paperFixes$forceTicks && paperFixes$catchupTicks > 0) {
                         this.paperFixes$nextTickTime = getNanos();
                         if (--this.paperFixes$catchupTicks == 0) {
                             this.paperFixes$forceTicks = false;

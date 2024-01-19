@@ -41,7 +41,8 @@ public class MixinExplosion {
             method = "doExplosionA",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;getBlockDensity(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/AxisAlignedBB;)F")
+                    target = "Lnet/minecraft/world/World;getBlockDensity(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/AxisAlignedBB;)F"
+            )
     )
     private float blockDensityCache(World world, Vec3d vector, AxisAlignedBB aabb) {
         if (!PaperFixesConfig.cacheBlockDensities) {

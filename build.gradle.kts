@@ -15,9 +15,13 @@ val tweakClass: String by project
 val mixinConfig: String by project
 
 loom {
-    runs.all {
-        programArgs("--tweakClass=$tweakClass", "--mixin.config=mixins.$modID.json")
-        property("mixin.debug.export", "true")
+    runs {
+        all {
+            programArgs("--tweakClass=$tweakClass")
+            property("mixin.debug.export", "true")
+        }
+        getByName("client").runDir("run")
+        getByName("server").runDir("runServer")
     }
     runConfigs.all {
         isIdeConfigGenerated = true
