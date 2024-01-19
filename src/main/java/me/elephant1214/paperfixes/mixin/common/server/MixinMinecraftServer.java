@@ -205,16 +205,6 @@ public abstract class MixinMinecraftServer {
         }
     }
 
-    @Inject(method = "initialWorldChunkLoad", at = @At(value = "HEAD"))
-    private void noSleepForWorldLoad(CallbackInfo ci) {
-        this.paperFixes$forceTicks = true;
-    }
-
-    @Inject(method = "initialWorldChunkLoad", at = @At(value = "RETURN"))
-    private void startSleepAfterChunkLoad(CallbackInfo ci) {
-        this.paperFixes$forceTicks = false;
-    }
-
     @Inject(
             method = "stopServer",
             at = @At(value = "INVOKE",
