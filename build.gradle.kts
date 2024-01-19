@@ -20,7 +20,6 @@ loom {
             programArgs("--tweakClass=$tweakClass")
             property("mixin.debug.export", "true")
         }
-        getByName("client").runDir("run")
         getByName("server").runDir("runServer")
     }
     runConfigs.all {
@@ -35,10 +34,6 @@ loom {
     mixin {
         defaultRefmapName.set("$modID-refmap.json")
     }
-}
-
-sourceSets.main {
-    output.resourcesDir = file("$buildDir/classes/java/main")
 }
 
 configurations.implementation {
@@ -106,6 +101,7 @@ tasks {
             "TweakClass" to tweakClass,
             "MixinConfigs" to mixinConfig
         )
+        duplicatesStrategy = DuplicatesStrategy.WARN
         dependsOn(shadowJar)
     }
 }
