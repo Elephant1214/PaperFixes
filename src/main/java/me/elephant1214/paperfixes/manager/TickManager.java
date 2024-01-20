@@ -13,7 +13,7 @@ public class TickManager {
     public static final long OVERLOADED_WARNING_INTERVAL = 10L * NANOS_PER_SECOND;
     public static final long NANOS_PER_TICK = NANOS_PER_SECOND / 20L;
 
-    public static final BigDecimal TPS_BASE = new BigDecimal("1E9").multiply(new java.math.BigDecimal(TARGET_TPS));
+    public static final BigDecimal TPS_BASE = new BigDecimal("1E9").multiply(new BigDecimal(TARGET_TPS));
     public static final RollingAverage TPS_5S = new RollingAverage(5);
     public static final RollingAverage TPS_1 = new RollingAverage(60);
     public static final RollingAverage TPS_5 = new RollingAverage(60 * 5);
