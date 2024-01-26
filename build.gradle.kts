@@ -9,7 +9,7 @@ plugins {
 val modGroup: String by project
 val modID: String by project
 group = modGroup
-version = "0.4.1-BETA"
+version = "0.4.2-BETA"
 
 val tweakClass: String by project
 val mixinConfig: String by project
@@ -64,6 +64,7 @@ tasks.withType<JavaCompile> {
     targetCompatibility = "1.8"
     options.encoding = "UTF-8"
     options.release.set(8)
+    options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
 }
 
 java {
