@@ -9,7 +9,7 @@ plugins {
 val modGroup: String by project
 val modID: String by project
 group = modGroup
-version = "0.4.2-BETA"
+version = "0.4.3-BETA"
 
 val tweakClass: String by project
 val mixinConfig: String by project
@@ -34,6 +34,10 @@ loom {
     mixin {
         defaultRefmapName.set("$modID-refmap.json")
     }
+}
+
+sourceSets.main {
+    output.resourcesDir = file("$buildDir/classes/java/main")
 }
 
 configurations.implementation {
@@ -103,7 +107,6 @@ tasks {
     }
     jar {
         manifest.attributes(
-            "ForceLoadAsMod" to true,
             "FMLAT" to "${modID}_at.cfg",
             "TweakClass" to tweakClass,
             "MixinConfigs" to mixinConfig
