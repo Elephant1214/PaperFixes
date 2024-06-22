@@ -30,9 +30,3 @@ please open an issue if you find any.
 ## Incompatibilities
 - The improved tick loop is not compatible with the `mixin.bugfix.slow_tps_catchup` option from
   [VintageFix](https://www.curseforge.com/minecraft/mc-mods/vintagefix) as they both overwrite the same method.
-- While working on a mod pack which included PaperFixes, there were odd chunk loading issues where chunks wouldn't load
-  at all no matter what I did.
-  I don't know what the actual cause of this is since it does not occur with the two mods alone,
-  but should you come across it, disabling `mixin.chunk_access` from VintageFix appears to fix it.
-- You should disable the fix for MC-80966 if you're using any mods that already fix it or fix the entire lighting engine such as Phosphor, Herperus, or Alfheim.
-  This should only apply to 0.4.1-BETA and below, as it was fixed after that version. You should be using the latest version anyway, though.
