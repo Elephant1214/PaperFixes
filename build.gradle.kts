@@ -1,9 +1,9 @@
 plugins {
     idea
     java
-    id("gg.essential.loom") version "1.3.+"
+    id("gg.essential.loom") version "1.6.+"
     id("dev.architectury.architectury-pack200") version "0.1.3"
-    id("com.github.johnrengelman.shadow") version "8.1.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 val modGroup: String by project
@@ -37,7 +37,7 @@ loom {
 }
 
 sourceSets.main {
-    output.resourcesDir = file("$buildDir/classes/java/main")
+    output.dir("${layout.buildDirectory.get()}/classes/java/main")
 }
 
 configurations.implementation {
@@ -54,11 +54,11 @@ dependencies {
     mappings("de.oceanlabs.mcp:${project.properties["mappings"]}")
     forge("net.minecraftforge:forge:${project.properties["forgeVersion"]}")
 
-    annotationProcessor("com.google.guava:guava:32.1.2-jre")
-    annotationProcessor("com.google.code.gson:gson:2.8.9")
+    annotationProcessor("com.google.guava:guava:33.2.1-jre")
+    annotationProcessor("com.google.code.gson:gson:2.10")
 
-    shadow("io.github.llamalad7:mixinextras-common:0.3.5")
-    annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")
+    shadow("io.github.llamalad7:mixinextras-common:0.3.6")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6")
     shadow("org.spongepowered:mixin:0.8.5")
     annotationProcessor("org.spongepowered:mixin:0.8.5")
 }
