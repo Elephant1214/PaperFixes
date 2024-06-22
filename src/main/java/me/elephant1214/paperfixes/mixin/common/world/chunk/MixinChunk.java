@@ -5,6 +5,7 @@ import net.minecraft.block.BlockMobSpawner;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,13 +22,17 @@ public abstract class MixinChunk {
     @Final
     private Map<BlockPos, TileEntity> tileEntities;
 
+    @Shadow
+    @Final
+    private World world;
+
     @Inject(
             method = "addTileEntity(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/tileentity/TileEntity;)V",
             at = @At("RETURN")
     )
     private void removeInvalidMobSpawners(BlockPos pos, TileEntity tileEntityIn, CallbackInfo ci) {
-        if (tileEntityIn instanceof TileEntityMobSpawner && !(((Chunk) (Object) this).getBlockState(pos).getBlock() instanceof BlockMobSpawner)) {
-            PaperFixes.LOGGER.warn("Removed invalid mob spawner at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+        if (tileEntityIn instanceof TileEntityMobSpawner && !(this.world.getBlockState(pos) instanceof BlockMobSpawner)) {
+            PaperFixes.LOGGER.warn("Removed invalid mob spawner at {}, {}, {}", pos.getX(), pos.getY(), pos.getZ());
             this.tileEntities.remove(pos);
         }
     }

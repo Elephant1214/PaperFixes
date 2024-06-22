@@ -46,26 +46,16 @@ public class CacheKey {
     @Override
     public int hashCode() {
         int result;
-        long temp;
         result = world.hashCode();
-        temp = Double.doubleToLongBits(posX);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(posY);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(posZ);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(minX);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(minY);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(minZ);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(maxX);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(maxY);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(maxZ);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + Double.hashCode(posX);
+        result = 31 * result + Double.hashCode(posY);
+        result = 31 * result + Double.hashCode(posZ);
+        result = 31 * result + Double.hashCode(minX);
+        result = 31 * result + Double.hashCode(minY);
+        result = 31 * result + Double.hashCode(minZ);
+        result = 31 * result + Double.hashCode(maxX);
+        result = 31 * result + Double.hashCode(maxY);
+        result = 31 * result + Double.hashCode(maxZ);
         return result;
     }
 }

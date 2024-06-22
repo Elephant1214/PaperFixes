@@ -87,7 +87,7 @@ public abstract class MixinMinecraftServer {
     public void run() {
         try {
             if (this.init()) {
-                PaperFixes.LOGGER.info("Using PaperFixes' enhanced tick loop, option: " + (PaperFixesConfig.enhancedTickLoop.keepTpsAtOrAbove19 ? "\"Keep TPS at or above 19\"" : "\"No tick loop sleep on lag\""));
+                PaperFixes.LOGGER.info("Using PaperFixes' enhanced tick loop, option: {}", PaperFixesConfig.enhancedTickLoop.keepTpsAtOrAbove19 ? "\"Keep TPS at or above 19\"" : "\"No tick loop sleep on lag\"");
 
                 FMLCommonHandler.instance().handleServerStarted();
                 this.currentTime = getMillis();

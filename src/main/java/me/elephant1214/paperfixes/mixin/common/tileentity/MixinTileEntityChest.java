@@ -3,6 +3,8 @@ package me.elephant1214.paperfixes.mixin.common.tileentity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityLockableLoot;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -13,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TileEntityChest.class)
-public abstract class MixinTileEntityChest {
+public abstract class MixinTileEntityChest extends TileEntityLockableLoot implements ITickable {
     @Shadow
     public abstract void checkForAdjacentChests();
 
@@ -43,6 +45,7 @@ public abstract class MixinTileEntityChest {
         ci.cancel();
     }
 
+    @SuppressWarnings({"RedundantCast", "DataFlowIssue"})
     @Inject(
             method = "openInventory",
             at = @At(
@@ -73,6 +76,7 @@ public abstract class MixinTileEntityChest {
         }
     }
 
+    @SuppressWarnings({"RedundantCast", "DataFlowIssue"})
     @Inject(method = "closeInventory",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V")
