@@ -77,9 +77,12 @@ public abstract class MixinTileEntityChest extends TileEntityLockableLoot implem
     }
 
     @SuppressWarnings({"RedundantCast", "DataFlowIssue"})
-    @Inject(method = "closeInventory",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V")
+    @Inject(
+            method = "closeInventory",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V"
+            )
     )
     private void handleCloseChest(EntityPlayer player, CallbackInfo ci) {
         BlockPos pos = ((TileEntityChest) (Object) this).getPos();

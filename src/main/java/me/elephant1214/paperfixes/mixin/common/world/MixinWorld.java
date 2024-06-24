@@ -3,7 +3,9 @@ package me.elephant1214.paperfixes.mixin.common.world;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,7 +15,7 @@ import java.util.Iterator;
 import java.util.Objects;
 
 @Mixin(World.class)
-public abstract class MixinWorld {
+public abstract class MixinWorld implements IBlockAccess, ICapabilityProvider {
     @SuppressWarnings("unused")
     @ModifyExpressionValue(
             method = "updateEntities",

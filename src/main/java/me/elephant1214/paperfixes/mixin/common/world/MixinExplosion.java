@@ -19,11 +19,9 @@ import java.util.List;
 
 @Mixin(Explosion.class)
 public class MixinExplosion {
-    @Shadow
-    @Final
+    @Shadow @Final
     private Entity exploder;
-    @Shadow
-    @Final
+    @Shadow @Final
     private World world;
 
     @Redirect(

@@ -13,8 +13,7 @@ import java.util.Queue;
 
 @Mixin(NetworkManager.class)
 public class MixinNetworkManager {
-    @Shadow
-    @Final
+    @Shadow @Final
     private Queue<NetworkManager.InboundHandlerTuplePacketListener> outboundPacketsQueue;
 
     @Shadow

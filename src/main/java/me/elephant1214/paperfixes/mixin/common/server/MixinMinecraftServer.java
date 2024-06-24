@@ -37,11 +37,9 @@ public abstract class MixinMinecraftServer {
     @Unique
     private long paperFixes$lastOverloadWarning = 0L;
 
-    @Shadow
-    @Final
+    @Shadow @Final
     private static Logger LOGGER;
-    @Shadow
-    @Final
+    @Shadow @Final
     private ServerStatusResponse statusResponse;
     @Shadow
     private boolean serverRunning;
@@ -80,8 +78,7 @@ public abstract class MixinMinecraftServer {
 
     /**
      * @author Elephant_1214
-     * @reason I don't want to fight with manually injecting this, and I'm not sure
-     * if it's even possible
+     * @reason Manually injecting this is not possible.
      */
     @Overwrite(remap = false)
     public void run() {
@@ -198,7 +195,7 @@ public abstract class MixinMinecraftServer {
 
     @Unique
     private void paperFixes$sleepUntilNextTick() throws InterruptedException {
-        if (paperFixes$forceTicks) return;
+        if (this.paperFixes$forceTicks) return;
         if (paperFixes$canSleep()) {
             final long sleepTime = paperFixes$calculateSleepTime() / 1000000L;
             Thread.sleep(sleepTime);

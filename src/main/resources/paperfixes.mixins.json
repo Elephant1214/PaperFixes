@@ -6,18 +6,18 @@
     "plugin": "me.elephant1214.paperfixes.mixin.PFMixinConfigPlugin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "common.world.chunk.MixinChunk",
-        "common.world.chunk.MixinChunkGeneratorOverworld",
-        "common.world.MixinExplosion",
-        "common.world.chunk.MixinExtendedBlockStorage",
-        "common.server.MixinMinecraftServer",
-        "common.network.MixinNetworkManager",
         "common.entity.MixinRangedAttribute",
-        "common.world.MixinTeleporter",
+        "common.network.MixinNetworkManager",
+        "common.network.invoker.InvokerNetHandlerPlayServer",
+        "common.server.MixinMinecraftServer",
         "common.tileentity.MixinTileEntityChest",
+        "common.world.MixinExplosion",
+        "common.world.MixinTeleporter",
         "common.world.MixinWorld",
         "common.world.accessor.AccessorExplosion",
-        "common.network.invoker.InvokerNetHandlerPlayServer"
+        "common.world.chunk.MixinChunk",
+        "common.world.chunk.MixinChunkGeneratorOverworld",
+        "common.world.chunk.MixinExtendedBlockStorage"
     ],
     "injectors": {
         "defaultRequire": 1
