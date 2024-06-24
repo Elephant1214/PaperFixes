@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Teleporter.class)
-public class MixinTeleporter {
+public abstract class MixinTeleporter {
     @Inject(
             method = "placeInExistingPortal",
             at = @At(

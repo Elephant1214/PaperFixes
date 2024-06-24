@@ -6,8 +6,6 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -38,14 +36,14 @@ public abstract class MixinTileEntityChest extends TileEntityLockableLoot implem
     public TileEntityChest adjacentChestZPos;
 
     /**
-     * @reason We never want this to run. I'm not even sure what would happen if it did other than problems.
+     * @reason We never want this to run.
+     * I'm not even sure what would happen if it did other than problems.
      */
     @Inject(method = "update", at = @At("HEAD"), cancellable = true)
     private void noChestAnimationInTick(CallbackInfo ci) {
         ci.cancel();
     }
 
-    @SuppressWarnings({"RedundantCast", "DataFlowIssue"})
     @Inject(
             method = "openInventory",
             at = @At(
@@ -54,15 +52,13 @@ public abstract class MixinTileEntityChest extends TileEntityLockableLoot implem
             )
     )
     private void handleOpenChest(EntityPlayer player, CallbackInfo ci) {
-        BlockPos pos = ((TileEntityChest) (Object) this).getPos();
-        World world = ((TileEntityChest) (Object) this).getWorld();
         this.checkForAdjacentChests();
 
         if (this.numPlayersUsing > 0 && this.lidAngle == 0.0F && this.adjacentChestZNeg == null && this.adjacentChestXNeg == null) {
             this.lidAngle = 0.7F;
 
-            double d0 = (double) pos.getZ() + 0.5D;
-            double d1 = (double) pos.getX() + 0.5D;
+            double d0 = (double) this.pos.getZ() + 0.5D;
+            double d1 = (double) this.pos.getX() + 0.5D;
 
             if (this.adjacentChestZPos != null) {
                 d0 += 0.5D;
@@ -72,11 +68,10 @@ public abstract class MixinTileEntityChest extends TileEntityLockableLoot implem
                 d1 += 0.5D;
             }
 
-            world.playSound(null, d1, (double) pos.getY() + 0.5D, d0, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
+            this.world.playSound(null, d1, (double) this.pos.getY() + 0.5D, d0, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
         }
     }
 
-    @SuppressWarnings({"RedundantCast", "DataFlowIssue"})
     @Inject(
             method = "closeInventory",
             at = @At(
@@ -85,9 +80,6 @@ public abstract class MixinTileEntityChest extends TileEntityLockableLoot implem
             )
     )
     private void handleCloseChest(EntityPlayer player, CallbackInfo ci) {
-        BlockPos pos = ((TileEntityChest) (Object) this).getPos();
-        World world = ((TileEntityChest) (Object) this).getWorld();
-
         if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F) {
             float f = 0.1F;
 
@@ -97,9 +89,9 @@ public abstract class MixinTileEntityChest extends TileEntityLockableLoot implem
                 this.lidAngle -= f;
             }
 
-            double d0 = (double) pos.getX() + 0.5D;
-            double d2 = (double) pos.getZ() + 0.5D;
-            int yPos = pos.getY();
+            double d0 = (double) this.pos.getX() + 0.5D;
+            double d2 = (double) this.pos.getZ() + 0.5D;
+            int yPos = this.pos.getY();
 
             if (this.adjacentChestZPos != null) {
                 d2 += 0.5D;
@@ -109,7 +101,7 @@ public abstract class MixinTileEntityChest extends TileEntityLockableLoot implem
                 d0 += 0.5D;
             }
 
-            world.playSound(null, d0, (double) yPos + 0.5D, d2, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
+            this.world.playSound(null, d0, (double) yPos + 0.5D, d2, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
             this.lidAngle = 0.0F;
         }
     }

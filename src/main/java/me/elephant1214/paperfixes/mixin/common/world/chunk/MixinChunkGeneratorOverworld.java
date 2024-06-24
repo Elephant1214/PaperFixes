@@ -1,12 +1,13 @@
 package me.elephant1214.paperfixes.mixin.common.world.chunk;
 
 import net.minecraft.world.gen.ChunkGeneratorOverworld;
+import net.minecraft.world.gen.IChunkGenerator;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(ChunkGeneratorOverworld.class)
-public class MixinChunkGeneratorOverworld {
+public abstract class MixinChunkGeneratorOverworld implements IChunkGenerator {
     @ModifyVariable(
             method = "generateHeightmap",
             at = @At(

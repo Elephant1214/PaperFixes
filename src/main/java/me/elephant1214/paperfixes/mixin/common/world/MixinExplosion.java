@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.util.List;
 
 @Mixin(Explosion.class)
-public class MixinExplosion {
+public abstract class MixinExplosion {
     @Shadow @Final
     private Entity exploder;
     @Shadow @Final

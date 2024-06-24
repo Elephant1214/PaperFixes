@@ -1,7 +1,9 @@
 package me.elephant1214.paperfixes.mixin.common.network;
 
 import io.netty.channel.Channel;
+import io.netty.channel.SimpleChannelInboundHandler;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Queue;
 
 @Mixin(NetworkManager.class)
-public class MixinNetworkManager {
+public abstract class MixinNetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
     @Shadow @Final
     private Queue<NetworkManager.InboundHandlerTuplePacketListener> outboundPacketsQueue;
 

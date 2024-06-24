@@ -29,6 +29,15 @@ public class PFMixinConfigPlugin implements IMixinConfigPlugin {
             case "me.elephant1214.paperfixes.mixin.common.world.chunk.MixinChunkGeneratorOverworld":
                 if (!PaperFixesConfig.mixinsSection.mc54738Fix) return false;
                 break;
+            case "me.elephant1214.paperfixes.mixin.common.world.chunk.MixinChunkProviderServer":
+                if (!PaperFixesConfig.mixinsSection.cacheLastChunk) return false;
+                break;
+            case "me.elephant1214.paperfixes.mixin.common.entity.MixinEntity":
+                if (!PaperFixesConfig.mixinsSection.sharedRandomInstanceForEntities) return false;
+                break;
+            case "me.elephant1214.paperfixes.mixin.common.network.datasync.MixinEntityDataManager":
+                if (!PaperFixesConfig.mixinsSection.optimizedEntityDataManagerHashMap) return false;
+                break;
             case "me.elephant1214.paperfixes.mixin.common.world.MixinExplosion":
             case "me.elephant1214.paperfixes.mixin.common.world.accessor.AccessorExplosion":
                 if (!PaperFixesConfig.mixinsSection.explosionMixin) return false;
@@ -45,9 +54,18 @@ public class PFMixinConfigPlugin implements IMixinConfigPlugin {
             case "me.elephant1214.paperfixes.mixin.common.entity.MixinRangedAttribute":
                 if (!PaperFixesConfig.mixinsSection.mc133373Fix) return false;
                 break;
+            case "me.elephant1214.paperfixes.mixin.common.entity.MixinRegionFile":
+                if (!PaperFixesConfig.mixinsSection.reduceIoOpsForRegions) return false;
+                break;
+            case "me.elephant1214.paperfixes.mixin.common.entity.MixinRegionFileCache":
+                if (!PaperFixesConfig.mixinsSection.trimRegionCacheInsteadOfClearing) return false;
+                break;
             case "me.elephant1214.paperfixes.mixin.common.world.MixinTeleporter":
             case "me.elephant1214.paperfixes.mixin.common.network.invoker.InvokerNetHandlerPlayServer":
                 if (!PaperFixesConfig.mixinsSection.mc98153Fix) return false;
+                break;
+            case "me.elephant1214.paperfixes.mixin.common.tileentity.MixinTileEntity":
+                if (!PaperFixesConfig.mixinsSection.preventHangingTileEntityCrashes) return false;
                 break;
             case "me.elephant1214.paperfixes.mixin.common.tileentity.MixinTileEntityChest":
                 if (!PaperFixesConfig.mixinsSection.removeChestAnimationsFromTick) return false;

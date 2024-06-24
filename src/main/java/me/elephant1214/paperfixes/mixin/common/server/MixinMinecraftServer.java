@@ -3,9 +3,12 @@ package me.elephant1214.paperfixes.mixin.common.server;
 import me.elephant1214.paperfixes.PaperFixes;
 import me.elephant1214.paperfixes.manager.TickManager;
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.network.ServerStatusResponse;
+import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -27,7 +30,7 @@ import static me.elephant1214.paperfixes.PaperFixes.*;
 import static me.elephant1214.paperfixes.manager.TickManager.*;
 
 @Mixin(MinecraftServer.class)
-public abstract class MixinMinecraftServer {
+public abstract class MixinMinecraftServer implements ICommandSender, Runnable, IThreadListener, ISnooperInfo {
     @Unique
     private long paperFixes$catchupTicks = 0L;
     @Unique

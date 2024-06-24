@@ -50,10 +50,10 @@ public class PaperFixesConfig {
     public static MixinsSection mixinsSection = new MixinsSection();
 
     public static class MixinsSection {
-        @Comment("Toggles the mixin which removes invalid mob spawners")
+        @Comment("Check for and remove invalid mob spawners (now with 100% less bugs)")
         public boolean removeInvalidMobSpawners = true;
 
-        @Comment("Toggles the mixin for the MC-54738 fix")
+        @Comment("Toggles the MC-54738 fix")
         public boolean mc54738Fix = true;
 
         @Comment({
@@ -62,19 +62,19 @@ public class PaperFixesConfig {
         })
         public boolean explosionMixin = true;
 
-        @Comment("Toggles the mixin for the MC-80966 fix")
+        @Comment("Toggles the MC-80966 fix")
         public boolean mc80966Fix = true;
 
-        @Comment("Toggles the mixin which clears the packet queue for a disconnecting player")
+        @Comment("Clears the packet queue for disconnecting players")
         public boolean clearPacketQueueOnDisconnect = true;
 
-        @Comment("Toggles the mixin for the MC-133373 fix")
+        @Comment("Toggles the the MC-133373 fix")
         public boolean mc133373Fix = true;
 
-        @Comment("Toggles the mixin for the MC-98153 fix")
+        @Comment("Toggles the MC-98153 fix")
         public boolean mc98153Fix = true;
 
-        @Comment("Toggles the mixin to remove the chest animations from the tick function")
+        @Comment("Removes the chest animation and sound from the tick method")
         public boolean removeChestAnimationsFromTick = true;
 
         @Comment({
@@ -82,5 +82,23 @@ public class PaperFixesConfig {
                 "This will also stop keepSpawnInMemory from functioning and break it, effectively making it always enabled."
         })
         public boolean worldMixin = true;
+        
+        @Comment("Use a shared instance of Random for entities")
+        public boolean sharedRandomInstanceForEntities = true;
+
+        @Comment("Fixes crashes caused by hanging tile entities")
+        public boolean preventHangingTileEntityCrashes = true;
+
+        @Comment("Reduces IO operations for loading region files")
+        public boolean reduceIoOpsForRegions = true;
+
+        @Comment("Trim region cache upon reaching 256 loaded instead of clearing it entirely")
+        public boolean trimRegionCacheInsteadOfClearing = true;
+
+        @Comment("Uses fastutil's Int2ObjectOpenHashMap for the data manager, significantly faster and with a smaller footprint")
+        public boolean optimizedEntityDataManagerHashMap = true;
+
+        @Comment("Caches the last requested chunk to save map searches when the calls get for the same chunk multiple times in a row")
+        public boolean cacheLastChunk = true;
     }
 }
