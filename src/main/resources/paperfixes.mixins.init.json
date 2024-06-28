@@ -1,0 +1,14 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "me.elephant1214.paperfixes.mixin",
+    "plugin": "me.elephant1214.paperfixes.core.MixinExtrasBootstrapPlugin",
+    "target": "@env(INIT)",
+    "compatibilityLevel": "JAVA_8",
+    "overwrites": {
+        "conformVisibility": true
+    },
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

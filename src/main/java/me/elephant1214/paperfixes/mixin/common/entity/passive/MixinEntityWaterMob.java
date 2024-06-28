@@ -26,7 +26,7 @@ public abstract class MixinEntityWaterMob extends EntityLiving implements IAnima
     )
     private void fixCanSpawnHere(CallbackInfoReturnable<Boolean> cir) {
         final int x = MathHelper.floor(this.posX);
-        final int y = MathHelper.floor(this.getCollisionBoundingBox().minY);
+        final int y = MathHelper.floor(this.getEntityBoundingBox().minY);
         final int z = MathHelper.floor(this.posZ);
         Block block = this.world.getBlockState(new BlockPos(x, y, z)).getBlock();
         

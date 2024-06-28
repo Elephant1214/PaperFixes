@@ -8,11 +8,17 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(name = PaperFixes.NAME, modid = PaperFixes.MOD_ID, version = PaperFixes.VERSION, acceptedMinecraftVersions = "1.12.2", acceptableRemoteVersions = "*")
+@Mod(
+        name = PaperFixes.NAME,
+        modid = PaperFixes.MOD_ID,
+        version = PaperFixes.VERSION,
+        acceptedMinecraftVersions = "1.12.2",
+        acceptableRemoteVersions = "*"
+)
 public class PaperFixes {
     public static final String NAME = "PaperFixes";
     public static final String MOD_ID = "paperfixes";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.1";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     public static ExplosionDensityCacheManager explosionDensityCache = null;

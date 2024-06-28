@@ -1,6 +1,5 @@
-package me.elephant1214.paperfixes.mixin;
+package me.elephant1214.paperfixes.core;
 
-import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import me.elephant1214.paperfixes.configuration.TickLoopMode;
 import org.objectweb.asm.tree.ClassNode;
@@ -13,7 +12,6 @@ import java.util.Set;
 public class PFMixinConfigPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
-        MixinExtrasBootstrap.init();
     }
 
     @Override

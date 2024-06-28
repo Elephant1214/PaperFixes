@@ -9,10 +9,9 @@ plugins {
 val modGroup: String by project
 val modID: String by project
 group = modGroup
-version = "1.0.0"
+version = "1.0.1"
 
 val tweakClass: String by project
-val mixinConfig: String by project
 
 loom {
     runs {
@@ -27,7 +26,7 @@ loom {
     }
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
-        mixinConfig(mixinConfig)
+        mixinConfigs("paperfixes.mixins.json", "paperfixes.mixins.init.json")
         accessTransformer("src/main/resources/${project.properties["accessTransformer"]}")
     }
     @Suppress("UnstableApiUsage")
@@ -104,9 +103,11 @@ tasks {
     }
     jar {
         manifest.attributes(
+            "FMLCorePlugin" to ("$modGroup.core.PFLoadingPlugin"),
+            "FMLCorePluginContainsFMLMod" to "true",
             "FMLAT" to "${modID}_at.cfg",
-            "TweakClass" to tweakClass,
-            "MixinConfigs" to mixinConfig
+            "MixinConfigs" to "paperfixes.mixins.json, paperfixes.mixins.init.json",
+            "ForceLoadAsMod" to "true",
         )
         duplicatesStrategy = DuplicatesStrategy.WARN
         dependsOn(shadowJar)

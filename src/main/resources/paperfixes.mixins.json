@@ -3,7 +3,7 @@
     "minVersion": "0.8",
     "package": "me.elephant1214.paperfixes.mixin",
     "refmap": "paperfixes-refmap.json",
-    "plugin": "me.elephant1214.paperfixes.mixin.PFMixinConfigPlugin",
+    "plugin": "me.elephant1214.paperfixes.core.PFMixinConfigPlugin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
         "common.entity.MixinEntity",
@@ -34,6 +34,9 @@
         "common.world.chunk.storage.MixinThreadedFileIOBase",
         "common.world.gen.MixinChunkProviderServer"
     ],
+    "overwrites": {
+        "conformVisibility": true
+    },
     "injectors": {
         "defaultRequire": 1
     }
