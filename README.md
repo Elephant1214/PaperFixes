@@ -31,11 +31,19 @@ The mod is on 1.x.x because it's stable and I haven't seen any new incompatibili
 - The entity data manager now uses a Int2ObjectOpenHashMap for entries which has a smaller memory footprint and is significantly faster.
 - The game will no longer attempt to add null block info to a crash report.
 - Region files now have their headers loaded entirely instead of the previous method of in chunks which hurt performance instead of helping it.
-- Instead of closing every region in the region file cache when it reaches 256 regions, the game will close the least accessed region.
-- The chunk provider caches the last accessed chunk, which can make a big difference in chunk loading and world generation as the game accesses the same chunks multiple times in a row.
+- Instead of closing every region in the region file cache when it reaches 256 regions,
+  the game will close the least accessed region.
+- The chunk provider caches the last accessed chunk,
+  which can make a big difference in chunk loading and world generation as the game accesses the same chunks multiple times in a row.
 - getCanSpawnHere in EntityWaterMob has been corrected and actually checks if the entity can spawn in the given area instead of just returning true.
 - Enchantments on items are sorted by their IDs to fix issues with the game thinking items that are the exact same are different.
-- The chunk loader's saving has been greatly improved, removing a random 10ms sleep call and using a queue instead of a hash map for proper queueing and popping instead of throwing iterators everywhere. This fixes slowdowns when many chunks are queued to be saved. If you toggle enableIoThreadSleep on, the thread will only sleep for 2ms between instead of the 10ms from before, but will use more memory again.
+- The chunk loader's saving has been greatly improved,
+  removing a random 10ms sleep call
+  and using a queue instead of a hash map for proper queueing and popping instead of throwing iterators everywhere.
+  This fixes slowdowns when many chunks are queued to be saved
+  and fixes race conditions that could cause chunks to fail to save.
+  If you toggle enableIoThreadSleep on, the thread will only sleep for 2ms between instead of the 10ms from before,
+  but will use more memory again.
 
 ## Incompatibilities
 - The improved tick loop is not compatible with the `mixin.bugfix.slow_tps_catchup` option from
