@@ -44,11 +44,6 @@ configurations.implementation {
     extendsFrom(configurations.getByName("shadow"))
 }
 
-repositories {
-    maven("https://repo.spongepowered.org/maven/")
-    mavenCentral()
-}
-
 dependencies {
     minecraft("com.mojang:minecraft:${project.properties["mcVersion"]}")
     mappings("de.oceanlabs.mcp:${project.properties["mappings"]}")
@@ -57,25 +52,27 @@ dependencies {
     annotationProcessor("com.google.guava:guava:33.2.1-jre")
     annotationProcessor("com.google.code.gson:gson:2.10")
 
+    shadow("net.fabricmc:sponge-mixin:0.14.0+mixin.0.8.6")
+    annotationProcessor("net.fabricmc:sponge-mixin:0.14.0+mixin.0.8.6")
     shadow("io.github.llamalad7:mixinextras-common:0.3.6")
     annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6")
-    shadow("org.spongepowered:mixin:0.8.5")
-    annotationProcessor("org.spongepowered:mixin:0.8.5")
 }
 
-tasks.withType<JavaCompile> {
-    sourceCompatibility  = "1.8"
-    targetCompatibility = "1.8"
-    options.encoding = "UTF-8"
-    options.release.set(8)
-    options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
-}
-
+val javaTarget = "8"
 java {
     withSourcesJar()
+    
+    val javaVer = JavaVersion.toVersion(javaTarget)
+    sourceCompatibility = javaVer
+    targetCompatibility = javaVer
+    toolchain.languageVersion.set(JavaLanguageVersion.of(javaTarget))
 }
 
 tasks {
+    withType<JavaCompile>().configureEach {
+        options.encoding = "UTF-8"
+        options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
+    }
     processResources {
         rename("(.+_at.cfg)", "META-INF/$1")
 

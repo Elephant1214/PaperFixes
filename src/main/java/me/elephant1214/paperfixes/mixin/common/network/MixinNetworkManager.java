@@ -15,7 +15,8 @@ import java.util.Queue;
 
 @Mixin(NetworkManager.class)
 public abstract class MixinNetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
-    @Shadow @Final
+    @Shadow
+    @Final
     private Queue<NetworkManager.InboundHandlerTuplePacketListener> outboundPacketsQueue;
 
     @Shadow

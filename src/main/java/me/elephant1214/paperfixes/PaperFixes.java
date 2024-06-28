@@ -17,6 +17,7 @@ public class PaperFixes {
 
     public static ExplosionDensityCacheManager explosionDensityCache = null;
 
+    @SuppressWarnings("unused")
     @Mod.EventHandler
     public void serverStartingEvent(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandTPS());

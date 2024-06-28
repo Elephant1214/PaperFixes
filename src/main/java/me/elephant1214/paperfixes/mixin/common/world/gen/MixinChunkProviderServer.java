@@ -6,7 +6,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderServer;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -16,8 +15,8 @@ import org.spongepowered.asm.mixin.Unique;
 public abstract class MixinChunkProviderServer implements IChunkProvider {
     @Unique
     protected Chunk paperFixes$lastAccessedChunk = null;
-    
-    @Shadow @Final
+
+    @Shadow
     public final Long2ObjectMap<Chunk> loadedChunks = new Long2ObjectOpenHashMap<Chunk>(8192) {
         @Override
         public Chunk get(long key) {
@@ -37,10 +36,10 @@ public abstract class MixinChunkProviderServer implements IChunkProvider {
     };
 
     /**
-     * Should only be called when paperFixes$lastAccessedChunk is not null
+     * Should only be called when this.paperFixes$lastAccessedChunk is *NOT* null
      */
     @Unique
     private long paperFixes$cachedAsLong() {
-        return ChunkPos.asLong(paperFixes$lastAccessedChunk.x, paperFixes$lastAccessedChunk.z);
+        return ChunkPos.asLong(this.paperFixes$lastAccessedChunk.x, this.paperFixes$lastAccessedChunk.z);
     }
 }

@@ -1,5 +1,6 @@
 package me.elephant1214.paperfixes.mixin.common.entity;
 
+import me.elephant1214.paperfixes.PaperFixes;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,18 +20,21 @@ public abstract class MixinEntity implements ICommandSender, ICapabilitySerializ
 
         @Override
         public synchronized void setSeed(long seed) {
-            if (!this.locked) {
+            if (this.locked) {
+                PaperFixes.LOGGER.error("Ignoring set seed on Entity.SHARED_RANDOM", new Throwable());
+            } else {
                 super.setSeed(seed);
                 locked = true;
             }
         }
     };
-
+    
     @Redirect(
             method = "<init>",
             at = @At(
                     value = "NEW",
-                    target = "()Ljava/util/Random;"
+                    target = "java/util/Random",
+                    remap = false
             )
     )
     private Random useSharedRandom() {
