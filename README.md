@@ -28,7 +28,7 @@ The mod is on 1.x.x because it's stable and I haven't seen any new incompatibili
     - A smaller 19x19 chunk area is constantly fully ticked, except [random ticks](https://minecraft.fandom.com/wiki/Tick#Random_tick), as if a player were in it. 
     - This is the equivalent of three and a half players' worth of ticked chunks if you use the default ten-chunk (10x10 area) view distance.
 - Entities now use a shared Random instance. Before, the game created a new Random instance for each entity, which is just unnecessary memory usage. This also removes the rand.setSeed call from EntitySquid since it's pointless and would also just cause an error to be printed every time a squid spawns.
-- The entity data manager now uses a Int2ObjectOpenHashMap for entries which has a smaller memory footprint and is significantly faster.
+- The entity data manager now uses an Int2ObjectOpenHashMap for entries which has a smaller memory footprint and is significantly faster.
 - The game will no longer attempt to add null block info to a crash report.
 - Region files now have their headers loaded entirely instead of the previous method of in chunks which hurt performance instead of helping it.
 - Instead of closing every region in the region file cache when it reaches 256 regions,
