@@ -19,7 +19,8 @@ import java.util.Map;
 
 @Mixin(Chunk.class)
 public abstract class MixinChunk implements ICapabilityProvider {
-    @Shadow @Final
+    @Shadow
+    @Final
     private Map<BlockPos, TileEntity> tileEntities;
 
     @Shadow

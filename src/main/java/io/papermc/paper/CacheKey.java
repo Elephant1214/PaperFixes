@@ -5,7 +5,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-public class CacheKey {
+public final class CacheKey {
     private final World world;
     private final double posX, posY, posZ;
     private final double minX, minY, minZ;

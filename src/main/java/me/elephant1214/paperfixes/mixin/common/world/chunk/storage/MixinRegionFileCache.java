@@ -3,7 +3,6 @@ package me.elephant1214.paperfixes.mixin.common.world.chunk.storage;
 import me.elephant1214.paperfixes.PaperFixes;
 import net.minecraft.world.chunk.storage.RegionFile;
 import net.minecraft.world.chunk.storage.RegionFileCache;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -18,7 +17,7 @@ import java.util.Map;
 
 @Mixin(RegionFileCache.class)
 public abstract class MixinRegionFileCache {
-    @Shadow @Final
+    @Shadow
     private static final Map<File, RegionFile> REGIONS_BY_FILE = new LinkedHashMap<>(256, 0.75F, true);
     
     @Redirect(

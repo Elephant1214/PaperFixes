@@ -1,6 +1,7 @@
 package me.elephant1214.paperfixes.mixin.common.server;
 
 import me.elephant1214.paperfixes.PaperFixes;
+import me.elephant1214.paperfixes.configuration.TickLoopMode;
 import me.elephant1214.paperfixes.manager.TickManager;
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import net.minecraft.command.ICommandSender;
@@ -15,9 +16,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.StartupQuery;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,34 +24,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static java.math.RoundingMode.HALF_UP;
-import static me.elephant1214.paperfixes.PaperFixes.*;
 import static me.elephant1214.paperfixes.manager.TickManager.*;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements ICommandSender, Runnable, IThreadListener, ISnooperInfo {
-    @Unique
-    private long paperFixes$catchupTicks = 0L;
-    @Unique
-    private boolean paperFixes$forceTicks = false;
-    @Unique
-    private long paperFixes$nextTickTime = 0L;
-    @Unique
-    private long paperFixes$lastOverloadWarning = 0L;
+    @Unique private long paperFixes$catchupTicks = 0L;
+    @Unique private boolean paperFixes$forceTicks = false;
+    @Unique private long paperFixes$nextTickTime = 0L;
+    @Unique private long paperFixes$lastOverloadWarning = 0L;
 
-    @Shadow @Final
-    private static Logger LOGGER;
-    @Shadow @Final
-    private ServerStatusResponse statusResponse;
-    @Shadow
-    private boolean serverRunning;
-    @Shadow
-    private boolean serverStopped;
-    @Shadow
-    private String motd;
-    @Shadow
-    private boolean serverIsRunning;
-    @Shadow
-    protected long currentTime;
+    @Shadow @Final protected static Logger LOGGER;
+    @Shadow @Final private ServerStatusResponse statusResponse;
+    @Shadow private boolean serverRunning;
+    @Shadow private boolean serverStopped;
+    @Shadow private String motd;
+    @Shadow private boolean serverIsRunning;
+    @Shadow protected long currentTime;
 
     @Shadow
     public abstract boolean init() throws IOException;
@@ -85,9 +71,12 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
      */
     @Overwrite(remap = false)
     public void run() {
+        TickLoopMode tickLoopMode = PaperFixesConfig.enhancedTickLoopMode;
         try {
             if (this.init()) {
-                PaperFixes.LOGGER.info("Using PaperFixes' enhanced tick loop, option: {}", PaperFixesConfig.enhancedTickLoop.keepTpsAtOrAbove19 ? "\"Keep TPS at or above 19\"" : "\"No tick loop sleep on lag\"");
+                if (tickLoopMode != TickLoopMode.OFF) {
+                    PaperFixes.LOGGER.info("Using PaperFixes' enhanced tick loop, option: {}", tickLoopMode == TickLoopMode.KEEP_TPS_AT_OR_ABOVE_19 ? "\"Keep TPS at or above 19\"" : "\"Dynamic sleep time\"");
+                }
 
                 FMLCommonHandler.instance().handleServerStarted();
                 this.currentTime = getMillis();
@@ -104,7 +93,7 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                     long timeToNext = getNanos() - this.paperFixes$nextTickTime;
                     long ticksBehind = timeToNext / NANOS_PER_TICK;
 
-                    if (PaperFixesConfig.enhancedTickLoop.keepTpsAtOrAbove19 && !PaperFixesConfig.enhancedTickLoop.noTickLoopSleepOnLag && ticksBehind > 1 && !this.paperFixes$forceTicks) {
+                    if (tickLoopMode == TickLoopMode.KEEP_TPS_AT_OR_ABOVE_19 && ticksBehind > 1 && !this.paperFixes$forceTicks) {
                         this.paperFixes$forceTicks = true;
                         this.paperFixes$catchupTicks = ticksBehind;
                     }
@@ -116,7 +105,7 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                             this.paperFixes$lastOverloadWarning = this.paperFixes$nextTickTime;
                         }
 
-                        if (PaperFixesConfig.enhancedTickLoop.noTickLoopSleepOnLag && !PaperFixesConfig.enhancedTickLoop.keepTpsAtOrAbove19) {
+                        if (tickLoopMode == TickLoopMode.DYNAMIC_SLEEP_TIME) {
                             this.paperFixes$forceTicks = true;
                             this.paperFixes$catchupTicks = ticksBehind;
                         }
@@ -136,7 +125,7 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                     this.paperFixes$nextTickTime += NANOS_PER_TICK;
                     this.tick();
 
-                    if ((PaperFixesConfig.enhancedTickLoop.keepTpsAtOrAbove19 || PaperFixesConfig.enhancedTickLoop.noTickLoopSleepOnLag) && this.paperFixes$forceTicks && paperFixes$catchupTicks > 0) {
+                    if (tickLoopMode != TickLoopMode.OFF && this.paperFixes$forceTicks && paperFixes$catchupTicks > 0) {
                         this.paperFixes$nextTickTime = getNanos();
                         if (--this.paperFixes$catchupTicks == 0) {
                             this.paperFixes$forceTicks = false;
@@ -203,18 +192,5 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
             final long sleepTime = paperFixes$calculateSleepTime() / 1000000L;
             Thread.sleep(sleepTime);
         }
-    }
-
-    @Inject(
-            method = "stopServer",
-            at = @At(value = "INVOKE",
-                    target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
-                    shift = At.Shift.AFTER,
-                    ordinal = 0,
-                    remap = false
-            )
-    )
-    private void clearExplosionDensityCache(CallbackInfo ci) {
-        explosionDensityCache.clearCache();
     }
 }
