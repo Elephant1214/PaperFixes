@@ -9,7 +9,7 @@ plugins {
 val modGroup: String by project
 val modID: String by project
 group = modGroup
-version = "1.0.1"
+version = "1.1.0-SNAPSHOT"
 
 val tweakClass: String by project
 

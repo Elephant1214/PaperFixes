@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@SuppressWarnings("unused")
 @Mod(
         name = PaperFixes.NAME,
         modid = PaperFixes.MOD_ID,
@@ -18,12 +19,11 @@ import org.apache.logging.log4j.Logger;
 public class PaperFixes {
     public static final String NAME = "PaperFixes";
     public static final String MOD_ID = "paperfixes";
-    public static final String VERSION = "1.0.1";
+    public static final String VERSION = "1.1.0-SNAPSHOT";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     public static ExplosionDensityCacheManager explosionDensityCache = null;
-
-    @SuppressWarnings("unused")
+    
     @Mod.EventHandler
     public void serverStartingEvent(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandTPS());
