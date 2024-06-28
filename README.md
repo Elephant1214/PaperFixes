@@ -1,7 +1,7 @@
 # PaperFixes
 A collection of bug and performance fixes from CraftBukkit, Spigot, and Paper in a Forge mod.\
 Remember that this mod is a work-in-progress and bugs and incompatibilities could occur, please open an issue if you find any.\
-The mod is on 1.0.0 because it's stable and I haven't seen any new incompatibilities.
+The mod is on 1.x.x because it's stable and I haven't seen any new incompatibilities.
 
 ## Current Fixes
 
