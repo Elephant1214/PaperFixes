@@ -22,6 +22,9 @@ public class PFMixinConfigPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         switch (mixinClassName) {
+            case "me.elephant1214.paperfixes.mixin.common.world.chunk.storage.MixinAnvilChunkLoader":
+                if (!PaperFixesConfig.performanceFixes.useQueueForChunkSaving) return false;
+                break;
             case "me.elephant1214.paperfixes.mixin.common.world.chunk.MixinChunk":
                 if (!PaperFixesConfig.bugFixes.removeInvalidMobSpawners) return false;
                 break;

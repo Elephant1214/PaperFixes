@@ -30,9 +30,6 @@ public class PaperFixesConfig {
             "KEEP_TPS_AT_OR_ABOVE_19: Stops sleeping entirely to get back up to 19 TPS as soon as it drops below."
     })
     public static TickLoopMode enhancedTickLoopMode = TickLoopMode.DYNAMIC_SLEEP_TIME;
-
-    @Comment("Enables sleeping between chunk saves")
-    public static boolean enableIoThreadSleep = false;
     
     @RequiresMcRestart
     @Name("Bug Fixes")
@@ -55,7 +52,7 @@ public class PaperFixesConfig {
         @Comment("Check for and remove invalid mob spawners (now with 100% less bugs!)")
         public boolean removeInvalidMobSpawners = true;
 
-        @Comment("Fixes crashes caused by hanging tile entities")
+        @Comment("Fixes crashes caused by hanging tile entities.")
         public boolean preventHangingTileEntityCrashes = true;
 
         @Comment("Fixes issues with two items sometimes being seen as different because of the order enchantments are listed in the NBT data by sorting them.")
@@ -67,35 +64,41 @@ public class PaperFixesConfig {
 
     @RequiresMcRestart
     @Name("Performance Fixes")
-    @Comment("Toggles for all performance fixes in the mod")
+    @Comment("Toggles for all performance fixes.")
     public static PerformanceFixesSection performanceFixes = new PerformanceFixesSection();
 
     public static class PerformanceFixesSection {
-        @Comment("Stops explosions processing dead entities")
+        @Comment("Stops explosions processing dead entities.")
         public boolean dontProcessDeadEntities = true;
 
-        @Comment("Clears the packet queue for disconnecting players")
+        @Comment("Clears the packet queue for disconnecting players.")
         public boolean clearPacketQueueOnDisconnect = true;
 
-        @Comment("Removes the chest animation and sound from the tick method")
+        @Comment("Removes the chest animation and sound from the tick method.")
         public boolean removeChestAnimationsFromTick = true;
 
-        @Comment("Removes fix for null tile entities when detected")
+        @Comment("Removes fix for null tile entities when detected.")
         public boolean removeNullTileEntities = true;
         
-        @Comment("Use a shared instance of Random for entities")
+        @Comment("Use a shared instance of Random for entities.")
         public boolean sharedRandomInstanceForEntities = true;
 
-        @Comment("Reduces IO operations for loading region files")
+        @Comment("Reduces IO operations for loading region files.")
         public boolean reduceIoOpsForRegions = true;
 
-        @Comment("Trim region cache upon reaching 256 loaded instead of clearing it entirely")
+        @Comment("Trim region cache upon reaching 256 loaded instead of clearing it entirely.")
         public boolean trimRegionCacheInsteadOfClearing = true;
 
-        @Comment("Uses fastutil's Int2ObjectOpenHashMap for the data manager, significantly faster and with a smaller footprint")
+        @Comment("Uses fastutil's Int2ObjectOpenHashMap for the data manager, significantly faster and with a smaller footprint.")
         public boolean optimizedEntityDataManagerHashMap = true;
 
-        @Comment("Caches the last requested chunk to save map searches when the calls get for the same chunk multiple times in a row")
+        @Comment("Caches the last requested chunk to save map searches when the calls get for the same chunk multiple times in a row.")
         public boolean cacheLastChunk = true;
+        
+        @Comment("Switches to an actual queue for handling chunk saving instead of tossing iterators everywhere.")
+        public boolean useQueueForChunkSaving = true;
+
+        @Comment("Enables sleeping between chunk saves. This can cause memory issues if enabled.")
+        public boolean enableIoThreadSleep = false;
     }
 }

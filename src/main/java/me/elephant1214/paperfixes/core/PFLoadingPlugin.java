@@ -10,7 +10,7 @@ import java.util.Map;
 public class PFLoadingPlugin implements IFMLLoadingPlugin {
     @Override
     public String[] getASMTransformerClass() {
-        return new String[0];
+        return null;
     }
 
     @Override

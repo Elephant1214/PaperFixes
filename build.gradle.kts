@@ -9,14 +9,12 @@ plugins {
 val modGroup: String by project
 val modID: String by project
 group = modGroup
-version = "1.1.0-SNAPSHOT"
-
-val tweakClass: String by project
+version = "1.1.0"
 
 loom {
     runs {
         all {
-            programArgs("--tweakClass=$tweakClass")
+            programArgs("--tweakClass=${properties["tweakClass"]}")
             property("mixin.debug.export", "true")
         }
         getByName("server").runDir("runServer")
@@ -27,7 +25,7 @@ loom {
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
         mixinConfigs("paperfixes.mixins.json", "paperfixes.mixins.init.json")
-        accessTransformer("src/main/resources/${project.properties["accessTransformer"]}")
+        accessTransformer("src/main/resources/${properties["accessTransformer"]}")
     }
     @Suppress("UnstableApiUsage")
     mixin {
@@ -44,9 +42,9 @@ configurations.implementation {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${project.properties["mcVersion"]}")
-    mappings("de.oceanlabs.mcp:${project.properties["mappings"]}")
-    forge("net.minecraftforge:forge:${project.properties["forgeVersion"]}")
+    minecraft("com.mojang:minecraft:${properties["mcVersion"]}")
+    mappings("de.oceanlabs.mcp:${properties["mappings"]}")
+    forge("net.minecraftforge:forge:${properties["forgeVersion"]}")
 
     annotationProcessor("com.google.guava:guava:33.2.1-jre")
     annotationProcessor("com.google.code.gson:gson:2.10")
