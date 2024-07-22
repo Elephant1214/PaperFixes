@@ -1,5 +1,6 @@
 package me.elephant1214.paperfixes.mixin.common.server;
 
+import me.elephant1214.paperfixes.manager.ExplosionDensityCacheManager;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.server.MinecraftServer;
@@ -8,8 +9,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import static me.elephant1214.paperfixes.PaperFixes.explosionDensityCache;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer_ExplosionDensity implements ICommandSender, Runnable, IThreadListener, ISnooperInfo {
@@ -23,6 +22,6 @@ public abstract class MixinMinecraftServer_ExplosionDensity implements ICommandS
             )
     )
     private void clearExplosionDensityCache(CallbackInfo ci) {
-        explosionDensityCache.clearCache();
+        ExplosionDensityCacheManager.INSTANCE.clearCache();
     }
 }

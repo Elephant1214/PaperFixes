@@ -5,11 +5,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 @Mixin(World.class)
 public abstract class MixinWorld implements IBlockAccess, ICapabilityProvider {
@@ -24,8 +24,8 @@ public abstract class MixinWorld implements IBlockAccess, ICapabilityProvider {
     )
     private Iterator<TileEntity> handleNullTileEntities(Iterator<TileEntity> instance) {
         while (instance.hasNext()) {
-            TileEntity element = instance.next();
-            if (Objects.isNull(element)) {
+            @Nullable TileEntity element = instance.next();
+            if (null == element) {
                 instance.remove();
             }
         }

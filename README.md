@@ -22,7 +22,7 @@ The mod is on 1.x.x because it's stable and I haven't seen any new incompatibili
   one minute, five minutes, and fifteen minutes.
   This command appears to be inaccurate for some unknown reason, and I would generally recommend Spark for accurate TPS,
   tick usage, and system information.
-- Null (invalid or broken) tile entities that could exist when a world is having its entities updated are removed when detected
+- ([Disabled by default](#known-incompatibilities)) Null (invalid or broken) tile entities that could exist when a world is having its entities updated are removed when detected.
 - The ability to toggle [spawn chunks](https://minecraft.fandom.com/wiki/Spawn_chunk) if they're not being used. Read below to find out why you might not want them enabled.
     - Spawn chunks are a 25x25 area of chunks around spawn that is always loaded by the game.
     - A smaller 19x19 chunk area is constantly fully ticked, except [random ticks](https://minecraft.fandom.com/wiki/Tick#Random_tick), as if a player were in it. 
@@ -45,6 +45,10 @@ The mod is on 1.x.x because it's stable and I haven't seen any new incompatibili
   If you toggle enableIoThreadSleep on, the thread will only sleep for 2ms between instead of the 10ms from before,
   but will use more memory again.
 
-## Incompatibilities
+### Client
+- The client chunk provider caches the last accessed chunk the same way the server provider does.
+
+## Known Incompatibilities
 - The improved tick loop is not compatible with the `mixin.bugfix.slow_tps_catchup` option from
-  [VintageFix](https://www.curseforge.com/minecraft/mc-mods/vintagefix) as they both overwrite the same method.
+  [VintageFix](https://github.com/embeddedt/VintageFix) and the tick loop changes from [Forged Carpet](https://github.com/DeadlyMC/forged-carpet) and likely from any other mod.
+- `removeNullTileEntities` breaks [Botania](https://botaniamod.net/index.html)'s flowers because of some odd way that Botania was written.

@@ -26,7 +26,7 @@ public class CommandTPS extends CommandBase {
     @Override
     public void execute(@NotNull MinecraftServer server, @NotNull ICommandSender sender, String @NotNull [] args) {
         final TextComponentString base = new TextComponentString("TPS from last 5s, 1m, 5m, 15m: ");
-        final double[] tps = TickManager.getTPS();
+        final double[] tps = TickManager.INSTANCE.getTPS();
         base.appendSibling(formatTPS(tps[0]));
         for (int entry = 1; entry < 4; entry++) {
             base.appendSibling(new TextComponentString(", "));

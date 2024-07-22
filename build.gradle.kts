@@ -9,7 +9,7 @@ plugins {
 val modGroup: String by project
 val modID: String by project
 group = modGroup
-version = "1.1.0"
+version = "1.2.0"
 
 loom {
     runs {
@@ -29,6 +29,7 @@ loom {
     }
     @Suppress("UnstableApiUsage")
     mixin {
+        useLegacyMixinAp.set(true)
         defaultRefmapName.set("$modID-refmap.json")
     }
 }
@@ -41,6 +42,11 @@ configurations.implementation {
     extendsFrom(configurations.getByName("shadow"))
 }
 
+repositories {
+    maven("https://maven.cleanroommc.com")
+    maven("https://repo.spongepowered.org/repository/maven-public")
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:${properties["mcVersion"]}")
     mappings("de.oceanlabs.mcp:${properties["mappings"]}")
@@ -49,8 +55,8 @@ dependencies {
     annotationProcessor("com.google.guava:guava:33.2.1-jre")
     annotationProcessor("com.google.code.gson:gson:2.10")
 
-    shadow("net.fabricmc:sponge-mixin:0.14.0+mixin.0.8.6")
-    annotationProcessor("net.fabricmc:sponge-mixin:0.14.0+mixin.0.8.6")
+    implementation("zone.rong:mixinbooter:8.8")
+    annotationProcessor("org.spongepowered:mixin:0.8.3")
     shadow("io.github.llamalad7:mixinextras-common:0.3.6")
     annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6")
 }
@@ -88,13 +94,7 @@ tasks {
         configurations = listOf(project.configurations.getByName("shadow"))
         relocate("com.llamalad7.mixinextras", "$modGroup.mixinextras")
         mergeServiceFiles()
-        exclude(
-            "module-info.class",
-            "org/spongepowered/asm/launch/MixinLaunchPlugin.class",
-            "org/spongepowered/asm/launch/MixinTransformationService.class",
-            "org/spongepowered/asm/launch/platform/container/ContainerHandleModLauncherEx.class",
-            "org/spongepowered/asm/launch/platform/container/ContainerHandleModLauncherEx\$SecureJarResource.class"
-        )
+        archiveClassifier = "deobf"
     }
     remapJar {
         inputFile.set(shadowJar.get().archiveFile)
@@ -104,7 +104,6 @@ tasks {
             "FMLCorePlugin" to ("$modGroup.core.PFLoadingPlugin"),
             "FMLCorePluginContainsFMLMod" to "true",
             "FMLAT" to "${modID}_at.cfg",
-            "MixinConfigs" to "paperfixes.mixins.json, paperfixes.mixins.init.json",
             "ForceLoadAsMod" to "true",
         )
         duplicatesStrategy = DuplicatesStrategy.WARN

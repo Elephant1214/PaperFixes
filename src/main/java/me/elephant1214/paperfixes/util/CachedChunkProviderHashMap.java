@@ -14,16 +14,16 @@ public class CachedChunkProviderHashMap extends Long2ObjectOpenHashMap<Chunk> {
 
     @Override
     public Chunk get(long key) {
-        if (lastAccessedChunk != null && key == asChunkKey(lastAccessedChunk)) {
-            return lastAccessedChunk;
+        if (this.lastAccessedChunk != null && key == asChunkKey(this.lastAccessedChunk)) {
+            return this.lastAccessedChunk;
         }
-        return lastAccessedChunk = super.get(key);
+        return this.lastAccessedChunk = super.get(key);
     }
 
     @Override
     public Chunk remove(long key) {
-        if (lastAccessedChunk != null && key == asChunkKey(lastAccessedChunk)) {
-            lastAccessedChunk = null;
+        if (this.lastAccessedChunk != null && key == asChunkKey(this.lastAccessedChunk)) {
+            this.lastAccessedChunk = null;
         }
         return super.remove(key);
     }

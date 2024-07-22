@@ -12,29 +12,22 @@ public class TickManager {
     public static final long OVERLOADED_THRESHOLD = 30L * NANOS_PER_SECOND / 20L;
     public static final long OVERLOADED_WARNING_INTERVAL = 10L * NANOS_PER_SECOND;
     public static final long NANOS_PER_TICK = NANOS_PER_SECOND / 20L;
+    public static final TickManager INSTANCE = new TickManager();
 
-    public static final BigDecimal TPS_BASE = new BigDecimal("1E9").multiply(new BigDecimal(TARGET_TPS));
-    public static final RollingAverage TPS_5S = new RollingAverage(5);
-    public static final RollingAverage TPS_1 = new RollingAverage(60);
-    public static final RollingAverage TPS_5 = new RollingAverage(60 * 5);
-    public static final RollingAverage TPS_15 = new RollingAverage(60 * 15);
+    public final BigDecimal tpsBase = new BigDecimal("1E9").multiply(new BigDecimal(TARGET_TPS));
+    public final RollingAverage tps5s = new RollingAverage(5);
+    public final RollingAverage tps1 = new RollingAverage(60);
+    public final RollingAverage tps5 = new RollingAverage(60 * 5);
+    public final RollingAverage tps15 = new RollingAverage(60 * 15);
 
     public static int currentTick = 0;
 
-    public static double[] getTPS() {
+    public double[] getTPS() {
         return new double[]{
-                TPS_5S.getAverage(),
-                TPS_1.getAverage(),
-                TPS_5.getAverage(),
-                TPS_15.getAverage()
+                tps5s.getAverage(),
+                tps1.getAverage(),
+                tps5.getAverage(),
+                tps15.getAverage()
         };
-    }
-
-    public static long getNanos() {
-        return System.nanoTime();
-    }
-
-    public static long getMillis() {
-        return getNanos() / 1000000L;
     }
 }

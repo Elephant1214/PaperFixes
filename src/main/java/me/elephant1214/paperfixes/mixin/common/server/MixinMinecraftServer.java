@@ -1,9 +1,9 @@
 package me.elephant1214.paperfixes.mixin.common.server;
 
 import me.elephant1214.paperfixes.PaperFixes;
+import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import me.elephant1214.paperfixes.configuration.TickLoopMode;
 import me.elephant1214.paperfixes.manager.TickManager;
-import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.network.ServerStatusResponse;
@@ -71,26 +71,26 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
      */
     @Overwrite(remap = false)
     public void run() {
-        TickLoopMode tickLoopMode = PaperFixesConfig.enhancedTickLoopMode;
         try {
             if (this.init()) {
+                TickLoopMode tickLoopMode = PaperFixesConfig.INSTANCE.enhancedTickLoopMode;
                 if (tickLoopMode != TickLoopMode.OFF) {
                     PaperFixes.LOGGER.info("Using PaperFixes' enhanced tick loop, option: {}", tickLoopMode == TickLoopMode.KEEP_TPS_AT_OR_ABOVE_19 ? "\"Keep TPS at or above 19\"" : "\"Dynamic sleep time\"");
                 }
 
                 FMLCommonHandler.instance().handleServerStarted();
-                this.currentTime = getMillis();
+                this.currentTime = paperFixes$getMillis();
 
                 this.statusResponse.setServerDescription(new TextComponentString(this.motd));
                 this.statusResponse.setVersion(new ServerStatusResponse.Version("1.12.2", 340));
                 this.applyServerIconToResponse(this.statusResponse);
 
-                this.paperFixes$nextTickTime = getNanos();
+                this.paperFixes$nextTickTime = paperFixes$getNanos();
 
-                long tickSection = getNanos(), curTime;
+                long tickSection = paperFixes$getNanos(), curTime;
                 while (this.serverRunning) {
-                    this.currentTime = getMillis();
-                    long timeToNext = getNanos() - this.paperFixes$nextTickTime;
+                    this.currentTime = paperFixes$getMillis();
+                    long timeToNext = paperFixes$getNanos() - this.paperFixes$nextTickTime;
                     long ticksBehind = timeToNext / NANOS_PER_TICK;
 
                     if (tickLoopMode == TickLoopMode.KEEP_TPS_AT_OR_ABOVE_19 && ticksBehind > 1 && !this.paperFixes$forceTicks) {
@@ -112,13 +112,13 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                     }
 
                     if (++currentTick % TARGET_TPS == 0) {
-                        curTime = getNanos();
+                        curTime = paperFixes$getNanos();
                         final long diff = curTime - tickSection;
-                        BigDecimal currentTps = TPS_BASE.divide(new BigDecimal(diff), 30, HALF_UP);
-                        TPS_5S.add(currentTps, diff);
-                        TPS_1.add(currentTps, diff);
-                        TPS_5.add(currentTps, diff);
-                        TPS_15.add(currentTps, diff);
+                        BigDecimal currentTps = TickManager.INSTANCE.tpsBase.divide(new BigDecimal(diff), 30, HALF_UP);
+                        TickManager.INSTANCE.tps5s.add(currentTps, diff);
+                        TickManager.INSTANCE.tps1.add(currentTps, diff);
+                        TickManager.INSTANCE.tps5.add(currentTps, diff);
+                        TickManager.INSTANCE.tps15.add(currentTps, diff);
                         tickSection = curTime;
                     }
 
@@ -126,7 +126,7 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                     this.tick();
 
                     if (tickLoopMode != TickLoopMode.OFF && this.paperFixes$forceTicks && paperFixes$catchupTicks > 0) {
-                        this.paperFixes$nextTickTime = getNanos();
+                        this.paperFixes$nextTickTime = paperFixes$getNanos();
                         if (--this.paperFixes$catchupTicks == 0) {
                             this.paperFixes$forceTicks = false;
                         }
@@ -177,12 +177,12 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
 
     @Unique
     private boolean paperFixes$canSleep() {
-        return TickManager.getNanos() < this.paperFixes$nextTickTime;
+        return paperFixes$getNanos() < this.paperFixes$nextTickTime;
     }
 
     @Unique
     private long paperFixes$calculateSleepTime() {
-        return this.paperFixes$nextTickTime - TickManager.getNanos();
+        return this.paperFixes$nextTickTime - paperFixes$getNanos();
     }
 
     @Unique
@@ -192,5 +192,15 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
             final long sleepTime = paperFixes$calculateSleepTime() / 1000000L;
             Thread.sleep(sleepTime);
         }
+    }
+
+    @Unique
+    private static long paperFixes$getNanos() {
+        return System.nanoTime();
+    }
+
+    @Unique
+    private static long paperFixes$getMillis() {
+        return paperFixes$getNanos() / 1000000L;
     }
 }
