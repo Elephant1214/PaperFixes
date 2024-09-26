@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ExplosionDensityCacheManager {
-    private final Map<CacheKey, Float> explosionDensityCache = new HashMap<>();
     public static final ExplosionDensityCacheManager INSTANCE = new ExplosionDensityCacheManager();
+    private final Map<CacheKey, Float> explosionDensityCache = new HashMap<>();
 
     public @Nullable Float getCached(@Nonnull CacheKey key) {
         return this.explosionDensityCache.getOrDefault(key, null);

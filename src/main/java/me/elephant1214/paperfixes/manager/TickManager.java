@@ -13,14 +13,12 @@ public class TickManager {
     public static final long OVERLOADED_WARNING_INTERVAL = 10L * NANOS_PER_SECOND;
     public static final long NANOS_PER_TICK = NANOS_PER_SECOND / 20L;
     public static final TickManager INSTANCE = new TickManager();
-
+    public static int currentTick = 0;
     public final BigDecimal tpsBase = new BigDecimal("1E9").multiply(new BigDecimal(TARGET_TPS));
     public final RollingAverage tps5s = new RollingAverage(5);
     public final RollingAverage tps1 = new RollingAverage(60);
     public final RollingAverage tps5 = new RollingAverage(60 * 5);
     public final RollingAverage tps15 = new RollingAverage(60 * 15);
-
-    public static int currentTick = 0;
 
     public double[] getTPS() {
         return new double[]{

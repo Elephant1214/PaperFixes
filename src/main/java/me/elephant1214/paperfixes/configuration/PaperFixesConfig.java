@@ -38,7 +38,7 @@ public final class PaperFixesConfig {
     public boolean enableIoThreadSleep = false;
     public boolean clientCacheLastChunk = true;
 
-    public static final String ENABLED = "enabled";
+    private static final String ENABLED = "enabled";
     private static final File FILE = new File(Launch.minecraftHome, "config" + File.separator + "paperfixes.json");
     public static final PaperFixesConfig INSTANCE = new PaperFixesConfig();
 
@@ -66,10 +66,10 @@ public final class PaperFixesConfig {
             PaperFixes.LOGGER.error("Could not write config: ", e);
         }
     }
-    
+
     public JsonObject serialize() {
         final JsonObject root = new JsonObject();
-        
+
         addTickLoopConfigOption(root, enhancedTickLoopMode.toString());
         addConfigOption(root, "keepSpawnLoaded", "Whether spawn chunks should always be loaded.", keepSpawnLoaded);
         addConfigOption(root, "cacheBlockDensities", "Caches block densities to make explosion calculations faster", cacheBlockDensities);
@@ -94,7 +94,7 @@ public final class PaperFixesConfig {
         addConfigOption(root, "useQueueForChunkSaving", "Switches to an actual queue for handling chunk saving instead of tossing iterators everywhere.", useQueueForChunkSaving);
         addConfigOption(root, "enableIoThreadSleep", "Enables sleeping between chunk saves. This can cause memory issues if enabled.", enableIoThreadSleep);
         addConfigOption(root, "clientCacheLastChunk", "Does the same as cacheLastChunk, but for the client chunk map.", clientCacheLastChunk);
-        
+
         return root;
     }
 
@@ -115,7 +115,7 @@ public final class PaperFixesConfig {
     
     public void deserialize(JsonObject data) {
         Objects.requireNonNull(data);
-        
+
         enhancedTickLoopMode = TickLoopMode.valueOf(data.get("enhancedTickLoopMode").getAsJsonObject().get("mode").getAsString());
         keepSpawnLoaded = data.get("keepSpawnLoaded").getAsJsonObject().get(ENABLED).getAsBoolean();
         cacheBlockDensities = data.get("cacheBlockDensities").getAsJsonObject().get(ENABLED).getAsBoolean();

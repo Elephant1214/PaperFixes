@@ -3,12 +3,16 @@
         "modid": "paperfixes",
         "name": "PaperFixes",
         "description": "A collection of bug and performance fixes from CraftBukkit, Spigot, and Paper in a Forge mod.",
-        "version": "1.2.0",
+        "version": "1.3.0",
         "mcversion": "1.12.2",
         "license": "GPL-3.0",
         "logoFile": "assets/paperfixes/paperfixes-icon.png",
         "url": "https://github.com/Elephant1214/PaperFixes",
-        "authorList": [ "Elephant_1214" ],
-        "dependencies": [ "mixinbooter" ]
+        "authorList": [
+            "Elephant_1214"
+        ],
+        "dependencies": [
+            "mixinbooter"
+        ]
     }
 ]

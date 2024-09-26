@@ -5,11 +5,11 @@ import static me.elephant1214.paperfixes.manager.TickManager.TARGET_TPS;
 
 public final class RollingAverage {
     private final int size;
+    private final java.math.BigDecimal[] samples;
+    private final long[] times;
     private long time;
     private java.math.BigDecimal total;
     private int index = 0;
-    private final java.math.BigDecimal[] samples;
-    private final long[] times;
 
     public RollingAverage(int size) {
         this.size = size;
@@ -26,6 +26,7 @@ public final class RollingAverage {
     private static java.math.BigDecimal dec(long t) {
         return new java.math.BigDecimal(t);
     }
+
     public void add(java.math.BigDecimal x, long t) {
         time -= times[index];
         total = total.subtract(samples[index].multiply(dec(times[index])));

@@ -1,8 +1,7 @@
 package me.elephant1214.paperfixes.mixin.common.item;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.elephant1214.paperfixes.mixin.common.nbt.accessor.AccessorNBTTagList;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,7 +18,7 @@ import java.util.Comparator;
 @Mixin(ItemStack.class)
 public class MixinItemStack {
     @Unique
-    private static final Comparator<NBTTagCompound> ENCHANT_SORTER = Comparator.comparingInt(c -> c.getShort("id"));
+    private static final Comparator<NBTTagCompound> ENCHANT_SORTER = Comparator.comparingInt(c -> c.getInteger("id"));
     @Shadow
     private NBTTagCompound stackTagCompound;
 
@@ -44,16 +43,11 @@ public class MixinItemStack {
         this.paperFixes$fixEnchantOrder(this.stackTagCompound);
     }
 
-    @WrapOperation(
+    @Inject(
             method = "addEnchantment",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/nbt/NBTTagCompound;setShort(Ljava/lang/String;S)V",
-                    ordinal = 1
-            )
+            at = @At("TAIL")
     )
-    private void addEnchantFixEnchantOrder(NBTTagCompound instance, String key, short value, Operation<Void> original) {
-        original.call(instance, key, value);
+    private void addEnchantFixEnchantOrder(Enchantment ench, int level, CallbackInfo ci) {
         this.paperFixes$fixEnchantOrder(this.stackTagCompound);
     }
 

@@ -26,16 +26,24 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Mixin(AnvilChunkLoader.class)
 public abstract class MixinAnvilChunkLoader implements IChunkLoader, IThreadedFileIO {
-    @Unique private final ConcurrentLinkedQueue<QueuedChunk> paperFixes$queue = new ConcurrentLinkedQueue<>();
-    @Unique private final Object paperFixes$lock = new Object();
-    @Unique private final AtomicLong paperFixes$processedSaves = new AtomicLong(0L);
-    
-    @Shadow @Final private Map<ChunkPos, NBTTagCompound> chunksToSave;
-    @Shadow @Final public File chunkSaveLocation;
+    @Shadow
+    @Final
+    protected static Logger LOGGER;
+    @Unique
+    private final ConcurrentLinkedQueue<QueuedChunk> paperFixes$queue = new ConcurrentLinkedQueue<>();
+    @Unique
+    private final Object paperFixes$lock = new Object();
+    @Unique
+    private final AtomicLong paperFixes$processedSaves = new AtomicLong(0L);
+    @Shadow
+    @Final
+    public File chunkSaveLocation;
+    @Shadow
+    @Final
+    private Map<ChunkPos, NBTTagCompound> chunksToSave;
 
-    @Shadow protected abstract void writeChunkData(ChunkPos pos, NBTTagCompound compound) throws IOException;
-
-    @Shadow @Final protected static Logger LOGGER;
+    @Shadow
+    protected abstract void writeChunkData(ChunkPos pos, NBTTagCompound compound) throws IOException;
 
     @Inject(
             method = "addChunkToPending",
@@ -46,7 +54,7 @@ public abstract class MixinAnvilChunkLoader implements IChunkLoader, IThreadedFi
         synchronized (this.paperFixes$lock) {
             this.chunksToSave.put(pos, compound);
         }
-        
+
         this.paperFixes$queue.add(new QueuedChunk(pos, compound));
 
         ThreadedFileIOBase.getThreadedIOInstance().queueIO(this);
@@ -62,7 +70,7 @@ public abstract class MixinAnvilChunkLoader implements IChunkLoader, IThreadedFi
         cir.setReturnValue(this.paperFixes$processSaveQueueEntry(false));
         cir.cancel();
     }
-    
+
     @Inject(
             method = "flush",
             at = @At("HEAD"),
@@ -106,11 +114,11 @@ public abstract class MixinAnvilChunkLoader implements IChunkLoader, IThreadedFi
                     PaperFixes.LOGGER.error(e);
                 }
             }
-            
+
             if (lastException != null) {
                 LOGGER.error("Failed to save chunk", lastException);
             }
-            
+
             synchronized (this.paperFixes$lock) {
                 if (this.chunksToSave.get(pos) == queuedChunk.compound) {
                     this.chunksToSave.remove(pos);

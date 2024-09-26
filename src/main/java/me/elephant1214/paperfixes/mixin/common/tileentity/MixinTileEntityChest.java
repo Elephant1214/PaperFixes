@@ -15,25 +15,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TileEntityChest.class)
 public abstract class MixinTileEntityChest extends TileEntityLockableLoot implements ITickable {
     @Shadow
-    public abstract void checkForAdjacentChests();
-
-    @Shadow
     public int numPlayersUsing;
-
     @Shadow
     public float lidAngle;
-
     @Shadow
     public TileEntityChest adjacentChestZNeg;
-
     @Shadow
     public TileEntityChest adjacentChestXNeg;
-
     @Shadow
     public TileEntityChest adjacentChestXPos;
-
     @Shadow
     public TileEntityChest adjacentChestZPos;
+
+    @Shadow
+    public abstract void checkForAdjacentChests();
 
     /**
      * @reason We never want this to run.

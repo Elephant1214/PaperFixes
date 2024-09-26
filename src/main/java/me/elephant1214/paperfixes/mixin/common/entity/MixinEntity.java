@@ -28,7 +28,7 @@ public abstract class MixinEntity implements ICommandSender, ICapabilitySerializ
             }
         }
     };
-    
+
     @Redirect(
             method = "<init>",
             at = @At(

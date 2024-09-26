@@ -28,18 +28,40 @@ import static me.elephant1214.paperfixes.manager.TickManager.*;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements ICommandSender, Runnable, IThreadListener, ISnooperInfo {
-    @Unique private long paperFixes$catchupTicks = 0L;
-    @Unique private boolean paperFixes$forceTicks = false;
-    @Unique private long paperFixes$nextTickTime = 0L;
-    @Unique private long paperFixes$lastOverloadWarning = 0L;
+    @Shadow
+    @Final
+    protected static Logger LOGGER;
+    @Shadow
+    protected long currentTime;
+    @Unique
+    private long paperFixes$catchupTicks = 0L;
+    @Unique
+    private boolean paperFixes$forceTicks = false;
+    @Unique
+    private long paperFixes$nextTickTime = 0L;
+    @Unique
+    private long paperFixes$lastOverloadWarning = 0L;
+    @Shadow
+    @Final
+    private ServerStatusResponse statusResponse;
+    @Shadow
+    private boolean serverRunning;
+    @Shadow
+    private boolean serverStopped;
+    @Shadow
+    private String motd;
+    @Shadow
+    private boolean serverIsRunning;
 
-    @Shadow @Final protected static Logger LOGGER;
-    @Shadow @Final private ServerStatusResponse statusResponse;
-    @Shadow private boolean serverRunning;
-    @Shadow private boolean serverStopped;
-    @Shadow private String motd;
-    @Shadow private boolean serverIsRunning;
-    @Shadow protected long currentTime;
+    @Unique
+    private static long paperFixes$getNanos() {
+        return System.nanoTime();
+    }
+
+    @Unique
+    private static long paperFixes$getMillis() {
+        return paperFixes$getNanos() / 1000000L;
+    }
 
     @Shadow
     public abstract boolean init() throws IOException;
@@ -192,15 +214,5 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
             final long sleepTime = paperFixes$calculateSleepTime() / 1000000L;
             Thread.sleep(sleepTime);
         }
-    }
-
-    @Unique
-    private static long paperFixes$getNanos() {
-        return System.nanoTime();
-    }
-
-    @Unique
-    private static long paperFixes$getMillis() {
-        return paperFixes$getNanos() / 1000000L;
     }
 }

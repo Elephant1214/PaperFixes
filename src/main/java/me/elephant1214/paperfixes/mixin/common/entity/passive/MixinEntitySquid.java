@@ -11,6 +11,10 @@ import java.util.Random;
 
 @Mixin(EntitySquid.class)
 public abstract class MixinEntitySquid extends EntityWaterMob {
+    private MixinEntitySquid(World world) {
+        super(world);
+    }
+
     @Redirect(
             method = "<init>",
             at = @At(
@@ -19,9 +23,5 @@ public abstract class MixinEntitySquid extends EntityWaterMob {
             )
     )
     private void ignoreSetSeed(Random instance, long seed) {
-    }
-    
-    private MixinEntitySquid(World world) {
-        super(world);
     }
 }

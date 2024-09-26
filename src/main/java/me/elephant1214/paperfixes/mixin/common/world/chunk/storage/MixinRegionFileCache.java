@@ -19,7 +19,7 @@ import java.util.Map;
 public abstract class MixinRegionFileCache {
     @Shadow
     private static final Map<File, RegionFile> REGIONS_BY_FILE = new LinkedHashMap<>(256, 0.75F, true);
-    
+
     @Redirect(
             method = "createOrLoadRegionFile",
             at = @At(
@@ -30,7 +30,7 @@ public abstract class MixinRegionFileCache {
     private static synchronized void trimInsteadOfClearing() {
         paperFixes$trimCache();
     }
-    
+
     @Unique
     private static synchronized void paperFixes$trimCache() {
         Iterator<Map.Entry<File, RegionFile>> iterator = REGIONS_BY_FILE.entrySet().iterator();

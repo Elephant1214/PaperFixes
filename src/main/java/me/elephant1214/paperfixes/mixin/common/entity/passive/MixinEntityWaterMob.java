@@ -29,7 +29,7 @@ public abstract class MixinEntityWaterMob extends EntityLiving implements IAnima
         final int y = MathHelper.floor(this.getEntityBoundingBox().minY);
         final int z = MathHelper.floor(this.posZ);
         Block block = this.world.getBlockState(new BlockPos(x, y, z)).getBlock();
-        
+
         cir.setReturnValue(block == Blocks.WATER || block == Blocks.FLOWING_WATER);
         cir.cancel();
     }

@@ -97,7 +97,7 @@ public class PFMixinConfigPlugin implements IMixinConfigPlugin {
                 if (!PaperFixesConfig.INSTANCE.removeNullTileEntities) return false;
                 break;
         }
-        
+
         // Mixins for specific sides
         MixinEnvironment.Side side = MixinEnvironment.getDefaultEnvironment().getSide();
         if (side == MixinEnvironment.Side.CLIENT) {
@@ -107,7 +107,7 @@ public class PFMixinConfigPlugin implements IMixinConfigPlugin {
                     break;
             }
         }
-        
+
         return true;
     }
 
