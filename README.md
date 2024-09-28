@@ -22,7 +22,7 @@ This is a performance mod and bugs and incompatibilities could occur, please ope
   This command appears to be inaccurate for some unknown reason, and I would generally recommend Spark for accurate TPS,
   tick usage, and system information.
 - ([Disabled by default](#known-incompatibilities)) Null (invalid or broken) tile entities that could exist when a world is having its entities updated are removed when detected.
-- The ability to toggle [spawn chunks](https://minecraft.fandom.com/wiki/Spawn_chunk) if they're not being used. Read below to find out why you might not want them enabled.
+- The ability to toggle [spawn chunks](https://minecraft.wiki/w/Spawn_chunk) if they're not being used. See below to find out why you might not want them enabled.
     - Spawn chunks are a 25x25 area of chunks around spawn that is always loaded by the game.
     - A smaller 19x19 chunk area is constantly fully ticked, except [random ticks](https://minecraft.fandom.com/wiki/Tick#Random_tick), as if a player were in it. 
     - This is the equivalent of three and a half players' worth of ticked chunks if you use the default ten-chunk (10x10 area) view distance.
@@ -50,6 +50,6 @@ This is a performance mod and bugs and incompatibilities could occur, please ope
 - The improved tick loop is not compatible with the `mixin.bugfix.slow_tps_catchup` option from
   [VintageFix](https://github.com/embeddedt/VintageFix) (removed as of commit [ecbc3e1](https://github.com/embeddedt/VintageFix/commit/ecbc3e193c7fc9bee85577fa5e9f362c6249d82a)) and the tick loop changes from [Forged Carpet](https://github.com/DeadlyMC/forged-carpet) and likely from any other mod.
 - `removeNullTileEntities` breaks [Botania](https://botaniamod.net/index.html)'s flowers because of some odd way that Botania was written.
-- Bad core mods can cause re-entry errors and crash the game as soon as it starts. This is not my fault and is unavoidable because these mods are loading game classes too early. The only solution is to replace them with a fork that fixes the problems.\
+- Bad core mods can cause re-entry errors and crash the game as soon as it starts. This is not PaperFixes' fault and is unavoidable because these mods are loading game classes too early. The only solution is to replace them with a fork that fixes the problems.\
   An incomplete list of problematic core mods and solutions:
     - [Quark](https://modrinth.com/mod/quark): Replace with [Quark: RoTN Edition](https://www.curseforge.com/minecraft/mc-mods/quark-rotn-edition) (Thanks to sahih_international for finding this)
