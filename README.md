@@ -31,9 +31,9 @@ This is a performance mod and bugs and incompatibilities could occur, please ope
 - The game will no longer attempt to add null block info to a crash report.
 - Region files now have their headers loaded entirely instead of the previous method of loading them in chunks which hurt performance instead of helping it.
 - Instead of closing every region in the region file cache when it reaches 256 regions,
-  The game will close the region with the least access.
-- The chunk provider caches the last accessed chunk,
-  which can make a big difference in chunk loading and world generation as the game accesses the same chunks multiple times in a row.
+  the game will close the region that is accessed the least.
+- The chunk provider caches the last accessed chunk.
+  This can make a big difference in chunk loading and world generation as the game commonly accesses the same chunks multiple times in a row.
 - getCanSpawnHere in EntityWaterMob has been corrected and checks if the entity can spawn in the given area instead of immediately returning true.
 - Enchantments on items are sorted by their IDs to fix issues with the game thinking items that are the same are different.
 - The chunk loader's saving has been greatly improved,
@@ -44,9 +44,12 @@ This is a performance mod and bugs and incompatibilities could occur, please ope
   If you toggle enableIoThreadSleep on, the thread will only sleep for 2ms instead of the 10ms from before but will use more memory again.
 
 ### Client
-- The client chunk provider caches the last accessed chunk like the server provider.
+- The client chunk provider caches the last accessed chunk the same way the server provider does.
 
 ## Known Incompatibilities
 - The improved tick loop is not compatible with the `mixin.bugfix.slow_tps_catchup` option from
-  [VintageFix](https://github.com/embeddedt/VintageFix) and the tick loop changes from [Forged Carpet](https://github.com/DeadlyMC/forged-carpet) and likely from any other mod.
+  [VintageFix](https://github.com/embeddedt/VintageFix) (removed as of commit [ecbc3e1](https://github.com/embeddedt/VintageFix/commit/ecbc3e193c7fc9bee85577fa5e9f362c6249d82a)) and the tick loop changes from [Forged Carpet](https://github.com/DeadlyMC/forged-carpet) and likely from any other mod.
 - `removeNullTileEntities` breaks [Botania](https://botaniamod.net/index.html)'s flowers because of some odd way that Botania was written.
+- Bad core mods can cause re-entry errors and crash the game as soon as it starts. This is not my fault and is unavoidable because these mods are loading game classes too early. The only solution is to replace them with a fork that fixes the problems.\
+  An incomplete list of problematic core mods and solutions:
+    - [Quark](https://modrinth.com/mod/quark): Replace with [Quark: RoTN Edition](https://www.curseforge.com/minecraft/mc-mods/quark-rotn-edition) (Thanks to sahih_international for finding this)
