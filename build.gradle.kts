@@ -9,7 +9,7 @@ plugins {
 val modGroup: String by project
 val modID: String by project
 group = modGroup
-version = "1.3.0"
+version = "1.3.1"
 
 loom {
     runs {
@@ -55,7 +55,7 @@ dependencies {
     annotationProcessor("com.google.guava:guava:33.2.1-jre")
     annotationProcessor("com.google.code.gson:gson:2.10")
 
-    implementation("zone.rong:mixinbooter:8.8")
+    implementation("zone.rong:mixinbooter:9.1")
     annotationProcessor("org.spongepowered:mixin:0.8.3")
     shadow("io.github.llamalad7:mixinextras-common:0.3.6")
     annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6")
