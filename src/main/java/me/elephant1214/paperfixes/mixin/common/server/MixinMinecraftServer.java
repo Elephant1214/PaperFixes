@@ -58,11 +58,6 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
         return System.nanoTime();
     }
 
-    @Unique
-    private static long paperFixes$getMillis() {
-        return paperFixes$getNanos() / 1000000L;
-    }
-
     @Shadow
     public abstract boolean init() throws IOException;
 
@@ -101,7 +96,7 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                 }
 
                 FMLCommonHandler.instance().handleServerStarted();
-                this.currentTime = paperFixes$getMillis();
+                this.currentTime = System.currentTimeMillis();
 
                 this.statusResponse.setServerDescription(new TextComponentString(this.motd));
                 this.statusResponse.setVersion(new ServerStatusResponse.Version("1.12.2", 340));
@@ -111,7 +106,6 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
 
                 long tickSection = paperFixes$getNanos(), curTime;
                 while (this.serverRunning) {
-                    this.currentTime = paperFixes$getMillis();
                     long timeToNext = paperFixes$getNanos() - this.paperFixes$nextTickTime;
                     long ticksBehind = timeToNext / NANOS_PER_TICK;
 
@@ -145,6 +139,7 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                     }
 
                     this.paperFixes$nextTickTime += NANOS_PER_TICK;
+                    this.currentTime = System.currentTimeMillis();
                     this.tick();
 
                     if (tickLoopMode != TickLoopMode.OFF && this.paperFixes$forceTicks && paperFixes$catchupTicks > 0) {
