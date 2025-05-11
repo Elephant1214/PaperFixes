@@ -18,7 +18,6 @@
         "common.server.MixinMinecraftServer",
         "common.server.MixinMinecraftServer_ExplosionDensity",
         "common.tileentity.MixinTileEntity",
-        "common.tileentity.MixinTileEntityChest",
         "common.world.MixinExplosion",
         "common.world.MixinExplosion_ExplosionDensity",
         "common.world.MixinTeleporter",
@@ -33,6 +32,9 @@
         "common.world.chunk.storage.MixinRegionFileCache",
         "common.world.chunk.storage.MixinThreadedFileIOBase",
         "common.world.gen.MixinChunkProviderServer"
+    ],
+    "server": [
+        "server.tileentity.MixinTileEntityChest"
     ],
     "client": [
         "client.multiplayer.MixinChunkProviderClient"

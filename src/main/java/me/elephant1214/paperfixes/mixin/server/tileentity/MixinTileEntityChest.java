@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common.tileentity;
+package me.elephant1214.paperfixes.mixin.server.tileentity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;

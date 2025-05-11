@@ -90,7 +90,7 @@ public class PFMixinConfigPlugin implements IMixinConfigPlugin {
             case "me.elephant1214.paperfixes.mixin.common.tileentity.MixinTileEntity":
                 if (!PaperFixesConfig.INSTANCE.preventHangingTileEntityCrashes) return false;
                 break;
-            case "me.elephant1214.paperfixes.mixin.common.tileentity.MixinTileEntityChest":
+            case "me.elephant1214.paperfixes.mixin.server.tileentity.MixinTileEntityChest":
                 if (!PaperFixesConfig.INSTANCE.removeChestAnimationsFromTick) return false;
                 break;
             case "me.elephant1214.paperfixes.mixin.common.world.MixinWorld":
