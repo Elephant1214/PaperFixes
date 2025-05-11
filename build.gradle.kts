@@ -1,7 +1,7 @@
 plugins {
     idea
     java
-    id("gg.essential.loom") version ("1.6+")
+    id("gg.essential.loom") version ("1.9.31")
     id("dev.architectury.architectury-pack200") version ("0.1.3")
     id("com.github.johnrengelman.shadow") version ("8.1.1")
 }
