@@ -1,65 +1,76 @@
 package me.elephant1214.paperfixes.configuration;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import me.elephant1214.paperfixes.PaperFixes;
 import net.minecraft.launchwrapper.Launch;
+import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Objects;
 
 public final class PaperFixesConfig {
+    // Features
+    public boolean enableSpawnChunkGamerule = true;
+    public int defaultSpawnChunkRadius = 3;
     public TickLoopMode enhancedTickLoopMode = TickLoopMode.DYNAMIC_SLEEP_TIME;
-    public boolean keepSpawnLoaded = false;
+
+    // Performance
+    public boolean allowIoThreadSleep = false;
     public boolean cacheBlockDensities = true;
-    public boolean mc54738Fix = true;
-    public boolean mc80966Fix = true;
-    public boolean mc133373Fix = true;
-    public boolean mc98153Fix = true;
-    public boolean removeInvalidMobSpawners = true;
-    public boolean preventHangingTileEntityCrashes = true;
-    public boolean sortEnchantments = true;
-    public boolean fixCanSpawnHereCheck = true;
-    public boolean dontProcessDeadEntities = true;
-    public boolean clearPacketQueueOnDisconnect = true;
-    public boolean removeChestAnimationsFromTick = true;
-    public boolean removeNullTileEntities = false;
-    public boolean sharedRandomInstanceForEntities = true;
-    public boolean removeSquidSetSeedCalls = true;
-    public boolean reduceIoOpsForRegions = true;
-    public boolean trimRegionCacheInsteadOfClearing = true;
-    public boolean optimizedEntityDataManagerHashMap = true;
     public boolean cacheLastChunk = true;
-    public boolean useQueueForChunkSaving = true;
-    public boolean enableIoThreadSleep = false;
     public boolean clientCacheLastChunk = true;
+    public boolean dontHandleChestAnimInTick = true;
+    public boolean removeSquidSetSeedCalls = true;
+    public boolean reduceRegionIoOps = true;
+    public boolean optimizedEntityDataMap = true;
+    public boolean queueChunkSaving = true;
+    public boolean trimRegionCache = true;
+    public boolean useSharedRandomForEntities = true;
 
-    private static final String ENABLED = "enabled";
-    private static final File FILE = new File(Launch.minecraftHome, "config" + File.separator + "paperfixes.json");
+    // Bug fixes
+    public boolean clearPacketQueue = true;
+    public boolean fixMc54738 = true;
+    public boolean fixMc80966 = true;
+    public boolean fixMc133373 = true;
+    public boolean fixMc98153 = true;
+    public boolean fixWaterMobSpawnCheck = true;
+    public boolean preventHangingTeCrashes = true;
+    public boolean removeInvalidMobSpawners = true;
+    public boolean removeNullTileEntities = false;
+    public boolean sortEnchantments = true;
+    public boolean stopDeadEntityProcessing = true;
+
     public static final PaperFixesConfig INSTANCE = new PaperFixesConfig();
+    private final File CONFIG_FILE = new File(Launch.minecraftHome, "config" + File.separator + "paperfixes.json");
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private PaperFixesConfig() {
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        if (!FILE.exists()) {
-            writeConfig(gson);
-        } else {
-            try {
-                this.deserialize(gson.fromJson(Files.newBufferedReader(FILE.toPath()), JsonObject.class));
-            } catch (Exception e) {
-                PaperFixes.LOGGER.error("Could not read config: ", e);
+        try {
+            if (!CONFIG_FILE.exists()) {
+                CONFIG_FILE.createNewFile();
                 writeConfig(gson);
+            } else {
+                BufferedReader fileReader = Files.newBufferedReader(CONFIG_FILE.toPath());
+                JsonObject json = gson.fromJson(fileReader, JsonObject.class);
+                ConfigReader reader = new ConfigReader(json);
+                deserialize(reader);
+                fileReader.close();
             }
+        } catch (Exception e) {
+            PaperFixes.LOGGER.error("Could not read config: ", e);
+            writeConfig(gson);
         }
     }
 
-    private void writeConfig(Gson gson) {
+    private void writeConfig(@NotNull Gson gson) {
         try {
-            final BufferedWriter writer = Files.newBufferedWriter(FILE.toPath());
+            final BufferedWriter writer = Files.newBufferedWriter(CONFIG_FILE.toPath());
             gson.toJson(this.serialize(), JsonObject.class, writer);
             writer.close();
         } catch (IOException e) {
@@ -67,78 +78,127 @@ public final class PaperFixesConfig {
         }
     }
 
-    public JsonObject serialize() {
-        final JsonObject root = new JsonObject();
+    private JsonObject serialize() {
+        final ConfigWriter config = new ConfigWriter();
 
-        addTickLoopConfigOption(root, enhancedTickLoopMode.toString());
-        addConfigOption(root, "keepSpawnLoaded", "Whether spawn chunks should always be loaded.", keepSpawnLoaded);
-        addConfigOption(root, "cacheBlockDensities", "Caches block densities to make explosion calculations faster", cacheBlockDensities);
-        addConfigOption(root, "mc54738Fix", "Fixes MC-54738", mc54738Fix);
-        addConfigOption(root, "mc80966Fix", "Fixes MC-80966", mc80966Fix);
-        addConfigOption(root, "mc133373Fix", "Fixes MC-133373", mc133373Fix);
-        addConfigOption(root, "mc98153Fix", "Fixes MC-98153", mc98153Fix);
-        addConfigOption(root, "removeInvalidMobSpawners", "Removes invalid mob spawners when detected.", removeInvalidMobSpawners);
-        addConfigOption(root, "preventHangingTileEntityCrashes", "Fixes crashes caused by hanging tile entities.", preventHangingTileEntityCrashes);
-        addConfigOption(root, "sortEnchantments", "Fixes issues with two items sometimes being seen as different because of the order enchantments are listed in the NBT data by sorting them.", sortEnchantments);
-        addConfigOption(root, "fixCanSpawnHereCheck", "Fixes getCanSpawnHere in EntityWaterMob which just returns true. This adds an actual bounding box check, should fix issues with all water mobs spawning and dying.", fixCanSpawnHereCheck);
-        addConfigOption(root, "dontProcessDeadEntities", "Stops explosions processing dead entities.", dontProcessDeadEntities);
-        addConfigOption(root, "clearPacketQueueOnDisconnect", "Clears the packet queue for disconnecting players.", clearPacketQueueOnDisconnect);
-        addConfigOption(root, "removeChestAnimationsFromTick", "Removes the chest animation and sound from the tick method.", removeChestAnimationsFromTick);
-        addConfigOption(root, "removeNullTileEntities", "Removes null tile entities when theyre detected. Can cause problems with some mods, check GitHub for any KNOWN issues before you enable this.", removeNullTileEntities);
-        addConfigOption(root, "sharedRandomInstanceForEntities", "Use a shared instance of Random for entities. Use removeSquidSetSeedCalls with this or you will get setSeed access errors logged.", sharedRandomInstanceForEntities);
-        addConfigOption(root, "removeSquidSetSeedCalls", "Stops pointless Random.setSeed calls made by the squid class.", removeSquidSetSeedCalls);
-        addConfigOption(root, "reduceIoOpsForRegions", "Reduces IO operations for loading region files.", reduceIoOpsForRegions);
-        addConfigOption(root, "trimRegionCacheInsteadOfClearing", "Trim region cache upon reaching 256 loaded instead of clearing it entirely.", trimRegionCacheInsteadOfClearing);
-        addConfigOption(root, "optimizedEntityDataManagerHashMap", "Uses fastutil Int2ObjectOpenHashMap for the data manager, significantly faster and with a smaller footprint.", optimizedEntityDataManagerHashMap);
-        addConfigOption(root, "cacheLastChunk", "Caches the last requested chunk to save map searches when the calls get for the same chunk multiple times in a row.", cacheLastChunk);
-        addConfigOption(root, "useQueueForChunkSaving", "Switches to an actual queue for handling chunk saving instead of tossing iterators everywhere.", useQueueForChunkSaving);
-        addConfigOption(root, "enableIoThreadSleep", "Enables sleeping between chunk saves. This can cause memory issues if enabled.", enableIoThreadSleep);
-        addConfigOption(root, "clientCacheLastChunk", "Does the same as cacheLastChunk, but for the client chunk map.", clientCacheLastChunk);
+        config.getRoot().addProperty("guide", "See https://github.com/Elephant1214/PaperFixes/blob/main/DETAILS.md for information about each option.");
 
-        return root;
+        // Features
+        config.addFeature(ENABLE_SPAWN_CHUNK_GAMERULE, new JsonPrimitive(enableSpawnChunkGamerule));
+        config.addFeature(DEFAULT_SPAWN_CHUNK_RADIUS, new JsonPrimitive(defaultSpawnChunkRadius));
+        config.addFeature(ENHANCED_TICK_LOOP_MODE, new JsonPrimitive(enhancedTickLoopMode.toString()));
+
+        // Performance
+        config.addPerformance(ALLOW_IO_THREAD_SLEEP, allowIoThreadSleep);
+        config.addPerformance(CACHE_BLOCK_DENSITIES, cacheBlockDensities);
+        config.addPerformance(CACHE_LAST_CHUNK, cacheLastChunk);
+        if (isClient()) {
+            config.addPerformance(CLIENT_CACHE_LAST_CHUNK, clientCacheLastChunk);
+        }
+        if (!isClient()) {
+            config.addPerformance(DONT_HANDLE_CHEST_ANIM_IN_TICK, dontHandleChestAnimInTick);
+        }
+        config.addPerformance(OPTIMIZED_ENTITY_DATA_MAP, optimizedEntityDataMap);
+        config.addPerformance(QUEUE_CHUNK_SAVING, queueChunkSaving);
+        config.addPerformance(REDUCE_REGION_IO_OPS, reduceRegionIoOps);
+        config.addPerformance(REMOVE_SQUID_SET_SEED_CALLS, removeSquidSetSeedCalls);
+        config.addPerformance(TRIM_REGION_CACHE, trimRegionCache);
+        config.addPerformance(USE_SHARED_RANDOM_FOR_ENTITIES, useSharedRandomForEntities);
+
+        // Bug fixes
+        config.addBugfix(CLEAR_PACKET_QUEUE, clearPacketQueue);
+        config.addBugfix(FIX_MC_54738, fixMc54738);
+        config.addBugfix(FIX_MC_80966, fixMc80966);
+        config.addBugfix(FIX_MC_98153, fixMc98153);
+        config.addBugfix(FIX_MC_133373, fixMc133373);
+        config.addBugfix(FIX_WATER_MOB_SPAWN_CHECK, fixWaterMobSpawnCheck);
+        config.addBugfix(PREVENT_HANGING_TE_CRASHES, preventHangingTeCrashes);
+        config.addBugfix(REMOVE_INVALID_MOB_SPAWNERS, removeInvalidMobSpawners);
+        config.addBugfix(REMOVE_NULL_TILE_ENTITIES, removeNullTileEntities);
+        config.addBugfix(SORT_ENCHANTMENTS, sortEnchantments);
+        config.addBugfix(STOP_DEAD_ENTITY_PROCESS, stopDeadEntityProcessing);
+
+        return config.getRoot();
     }
 
-    private static void addTickLoopConfigOption(JsonObject root, String value) {
-        final JsonObject entry = new JsonObject();
-        entry.addProperty("description", "The took loop mode to use. Dynamic sleep time sleeps dynamically to avoid sleeping too much. Keep TPS at or above 19 keeps TPS as close to 19 as possible when lag occurs.");
-        entry.addProperty("modes", "DYNAMIC_SLEEP_TIME, KEEP_TPS_AT_OR_ABOVE_19, OFF");
-        entry.addProperty("mode", value);
-        root.add("enhancedTickLoopMode", entry);
+    private void deserializeTickLoopMode(@NotNull ConfigReader reader) {
+        String mode = reader.getFeature(ENHANCED_TICK_LOOP_MODE).getAsString();
+        try {
+            TickLoopMode.valueOf(mode);
+        } catch (IllegalArgumentException e) {
+            PaperFixes.LOGGER.error("Invalid tick loop mode '{}', please fix your config. Falling back to {}.", mode, TickLoopMode.DYNAMIC_SLEEP_TIME.toString());
+        }
     }
-    
-    private static void addConfigOption(JsonObject root, String name, String description, boolean value) {
-        final JsonObject entry = new JsonObject();
-        entry.addProperty("description", description);
-        entry.addProperty(ENABLED, value);
-        root.add(name, entry);
-    }
-    
-    public void deserialize(JsonObject data) {
-        Objects.requireNonNull(data);
 
-        enhancedTickLoopMode = TickLoopMode.valueOf(data.get("enhancedTickLoopMode").getAsJsonObject().get("mode").getAsString());
-        keepSpawnLoaded = data.get("keepSpawnLoaded").getAsJsonObject().get(ENABLED).getAsBoolean();
-        cacheBlockDensities = data.get("cacheBlockDensities").getAsJsonObject().get(ENABLED).getAsBoolean();
-        mc54738Fix = data.get("mc54738Fix").getAsJsonObject().get(ENABLED).getAsBoolean();
-        mc80966Fix = data.get("mc80966Fix").getAsJsonObject().get(ENABLED).getAsBoolean();
-        mc133373Fix = data.get("mc133373Fix").getAsJsonObject().get(ENABLED).getAsBoolean();
-        mc98153Fix = data.get("mc98153Fix").getAsJsonObject().get(ENABLED).getAsBoolean();
-        removeInvalidMobSpawners = data.get("removeInvalidMobSpawners").getAsJsonObject().get(ENABLED).getAsBoolean();
-        preventHangingTileEntityCrashes = data.get("preventHangingTileEntityCrashes").getAsJsonObject().get(ENABLED).getAsBoolean();
-        sortEnchantments = data.get("sortEnchantments").getAsJsonObject().get(ENABLED).getAsBoolean();
-        fixCanSpawnHereCheck = data.get("fixCanSpawnHereCheck").getAsJsonObject().get(ENABLED).getAsBoolean();
-        dontProcessDeadEntities = data.get("dontProcessDeadEntities").getAsJsonObject().get(ENABLED).getAsBoolean();
-        clearPacketQueueOnDisconnect = data.get("clearPacketQueueOnDisconnect").getAsJsonObject().get(ENABLED).getAsBoolean();
-        removeChestAnimationsFromTick = data.get("removeChestAnimationsFromTick").getAsJsonObject().get(ENABLED).getAsBoolean();
-        removeNullTileEntities = data.get("removeNullTileEntities").getAsJsonObject().get(ENABLED).getAsBoolean();
-        sharedRandomInstanceForEntities = data.get("sharedRandomInstanceForEntities").getAsJsonObject().get(ENABLED).getAsBoolean();
-        removeSquidSetSeedCalls = data.get("removeSquidSetSeedCalls").getAsJsonObject().get(ENABLED).getAsBoolean();
-        reduceIoOpsForRegions = data.get("reduceIoOpsForRegions").getAsJsonObject().get(ENABLED).getAsBoolean();
-        trimRegionCacheInsteadOfClearing = data.get("trimRegionCacheInsteadOfClearing").getAsJsonObject().get(ENABLED).getAsBoolean();
-        optimizedEntityDataManagerHashMap = data.get("optimizedEntityDataManagerHashMap").getAsJsonObject().get(ENABLED).getAsBoolean();
-        cacheLastChunk = data.get("cacheLastChunk").getAsJsonObject().get(ENABLED).getAsBoolean();
-        useQueueForChunkSaving = data.get("useQueueForChunkSaving").getAsJsonObject().get(ENABLED).getAsBoolean();
-        enableIoThreadSleep = data.get("enableIoThreadSleep").getAsJsonObject().get(ENABLED).getAsBoolean();
-        clientCacheLastChunk = data.get("clientCacheLastChunk").getAsJsonObject().get(ENABLED).getAsBoolean();
+    private void deserialize(@NotNull ConfigReader reader) {
+        // Features
+        enableSpawnChunkGamerule = reader.getFeature(ENABLE_SPAWN_CHUNK_GAMERULE).getAsBoolean();
+        defaultSpawnChunkRadius = reader.getFeature(DEFAULT_SPAWN_CHUNK_RADIUS).getAsInt();
+        deserializeTickLoopMode(reader);
+
+        // Performance
+        allowIoThreadSleep = reader.getPerformance(ALLOW_IO_THREAD_SLEEP);
+        cacheBlockDensities = reader.getPerformance(CACHE_BLOCK_DENSITIES);
+        cacheLastChunk = reader.getPerformance(CACHE_LAST_CHUNK);
+        if (isClient()) {
+            clientCacheLastChunk = reader.getPerformance(CLIENT_CACHE_LAST_CHUNK);
+        }
+        if (!isClient()) {
+            dontHandleChestAnimInTick = reader.getPerformance(DONT_HANDLE_CHEST_ANIM_IN_TICK);
+        }
+        optimizedEntityDataMap = reader.getPerformance(OPTIMIZED_ENTITY_DATA_MAP);
+        queueChunkSaving = reader.getPerformance(QUEUE_CHUNK_SAVING);
+        reduceRegionIoOps = reader.getPerformance(REDUCE_REGION_IO_OPS);
+        removeSquidSetSeedCalls = reader.getPerformance(REMOVE_SQUID_SET_SEED_CALLS);
+        trimRegionCache = reader.getPerformance(TRIM_REGION_CACHE);
+        useSharedRandomForEntities = reader.getPerformance(USE_SHARED_RANDOM_FOR_ENTITIES);
+
+        // Bug fixes
+        clearPacketQueue = reader.getBugfix(CLEAR_PACKET_QUEUE);
+        fixMc54738 = reader.getBugfix(FIX_MC_54738);
+        fixMc80966 = reader.getBugfix(FIX_MC_80966);
+        fixMc98153 = reader.getBugfix(FIX_MC_98153);
+        fixMc133373 = reader.getBugfix(FIX_MC_133373);
+        fixWaterMobSpawnCheck = reader.getBugfix(FIX_WATER_MOB_SPAWN_CHECK);
+        preventHangingTeCrashes = reader.getBugfix(PREVENT_HANGING_TE_CRASHES);
+        removeInvalidMobSpawners = reader.getBugfix(REMOVE_INVALID_MOB_SPAWNERS);
+        removeNullTileEntities = reader.getBugfix(REMOVE_NULL_TILE_ENTITIES);
+        sortEnchantments = reader.getBugfix(SORT_ENCHANTMENTS);
+        stopDeadEntityProcessing = reader.getBugfix(STOP_DEAD_ENTITY_PROCESS);
     }
+
+    private static boolean isClient() {
+        return MixinEnvironment.getCurrentEnvironment().getSide() == MixinEnvironment.Side.CLIENT;
+    }
+
+    // Features
+    private static final String ENHANCED_TICK_LOOP_MODE = "enhancedTickLoopMode";
+    private static final String ENABLE_SPAWN_CHUNK_GAMERULE = "enableSpawnChunkGamerule";
+    private static final String DEFAULT_SPAWN_CHUNK_RADIUS = "defaultSpawnChunkRadius";
+
+    // Performance
+    private static final String ALLOW_IO_THREAD_SLEEP = "allowIoThreadSleep";
+    private static final String CACHE_BLOCK_DENSITIES = "cacheBlockDensities";
+    private static final String CACHE_LAST_CHUNK = "cacheLastChunk";
+    private static final String CLIENT_CACHE_LAST_CHUNK = "clientCacheLastChunk";
+    private static final String DONT_HANDLE_CHEST_ANIM_IN_TICK = "dontHandleChestAnimInTick";
+    private static final String OPTIMIZED_ENTITY_DATA_MAP = "optimizedEntityDataMap";
+    private static final String QUEUE_CHUNK_SAVING = "queueChunkSaving";
+    private static final String REDUCE_REGION_IO_OPS = "reduceRegionIoOps";
+    private static final String REMOVE_SQUID_SET_SEED_CALLS = "removeSquidSetSeedCalls";
+    private static final String TRIM_REGION_CACHE = "trimRegionCache";
+    private static final String USE_SHARED_RANDOM_FOR_ENTITIES = "useSharedRandomForEntities";
+
+    // Bug fixes
+    private static final String CLEAR_PACKET_QUEUE = "clearPacketQueue";
+    private static final String FIX_MC_54738 = "fixMc54738";
+    private static final String FIX_MC_80966 = "fixMc80966";
+    private static final String FIX_MC_98153 = "fixMc98153";
+    private static final String FIX_MC_133373 = "fixMc133373";
+    private static final String FIX_WATER_MOB_SPAWN_CHECK = "fixWaterMobSpawnCheck";
+    private static final String PREVENT_HANGING_TE_CRASHES = "preventHangingTileEntityCrashes";
+    private static final String REMOVE_INVALID_MOB_SPAWNERS = "removeInvalidMobSpawners";
+    private static final String REMOVE_NULL_TILE_ENTITIES = "removeNullTileEntities";
+    private static final String SORT_ENCHANTMENTS = "sortEnchantments";
+    private static final String STOP_DEAD_ENTITY_PROCESS = "stopDeadEntityProcessing";
 }

@@ -3,6 +3,7 @@ package me.elephant1214.paperfixes.util;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CachedChunkProviderHashMap extends Long2ObjectOpenHashMap<Chunk> {
@@ -28,7 +29,7 @@ public class CachedChunkProviderHashMap extends Long2ObjectOpenHashMap<Chunk> {
         return super.remove(key);
     }
 
-    private static long asChunkKey(Chunk chunk) {
+    private static long asChunkKey(@NotNull Chunk chunk) {
         return ChunkPos.asLong(chunk.x, chunk.z);
     }
 }

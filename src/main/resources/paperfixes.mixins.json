@@ -22,7 +22,7 @@
         "common.world.MixinExplosion_ExplosionDensity",
         "common.world.MixinTeleporter",
         "common.world.MixinWorld",
-        "common.world.MixinWorld_KeepSpawnLoaded",
+        "common.world.MixinWorld_SpawnChunkGamerule",
         "common.world.accessor.AccessorExplosion",
         "common.world.chunk.MixinChunk",
         "common.world.chunk.MixinChunkGeneratorOverworld",

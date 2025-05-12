@@ -12,18 +12,17 @@ import java.util.Map;
 @IFMLLoadingPlugin.MCVersion("1.12.2")
 public class PFLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     @Override
-    public String[] getASMTransformerClass() {
+    public @Nullable String[] getASMTransformerClass() {
         return null;
     }
 
     @Override
-    public String getModContainerClass() {
+    public @Nullable String getModContainerClass() {
         return null;
     }
 
-    @Nullable
     @Override
-    public String getSetupClass() {
+    public @Nullable String getSetupClass() {
         return null;
     }
 
@@ -32,7 +31,7 @@ public class PFLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     }
 
     @Override
-    public String getAccessTransformerClass() {
+    public @Nullable String getAccessTransformerClass() {
         return null;
     }
 

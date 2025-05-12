@@ -3,7 +3,6 @@ package me.elephant1214.paperfixes.mixin.common.server;
 import me.elephant1214.paperfixes.PaperFixes;
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import me.elephant1214.paperfixes.configuration.TickLoopMode;
-import me.elephant1214.paperfixes.manager.TickManager;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.network.ServerStatusResponse;
@@ -19,12 +18,10 @@ import org.spongepowered.asm.mixin.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static java.math.RoundingMode.HALF_UP;
-import static me.elephant1214.paperfixes.manager.TickManager.*;
+import static me.elephant1214.paperfixes.util.TickConstants.*;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements ICommandSender, Runnable, IThreadListener, ISnooperInfo {
@@ -33,14 +30,6 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
     protected static Logger LOGGER;
     @Shadow
     protected long currentTime;
-    @Unique
-    private long paperFixes$catchupTicks = 0L;
-    @Unique
-    private boolean paperFixes$forceTicks = false;
-    @Unique
-    private long paperFixes$nextTickTime = 0L;
-    @Unique
-    private long paperFixes$lastOverloadWarning = 0L;
     @Shadow
     @Final
     private ServerStatusResponse statusResponse;
@@ -82,6 +71,34 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
     @Shadow
     public abstract void systemExitNow();
 
+    @Unique
+    private long paperFixes$catchupTicks = 0L;
+    @Unique
+    private boolean paperFixes$forceTicks = false;
+    @Unique
+    private long paperFixes$nextTickTime = 0L;
+    @Unique
+    private long paperFixes$lastOverloadWarning = 0L;
+
+    @Unique
+    private boolean paperFixes$canSleep() {
+        return paperFixes$getNanos() < this.paperFixes$nextTickTime;
+    }
+
+    @Unique
+    private long paperFixes$calculateSleepTime() {
+        return this.paperFixes$nextTickTime - paperFixes$getNanos();
+    }
+
+    @Unique
+    private void paperFixes$sleepUntilNextTick() throws InterruptedException {
+        if (this.paperFixes$forceTicks) return;
+        if (paperFixes$canSleep()) {
+            final long sleepTime = paperFixes$calculateSleepTime() / NANOS_PER_SECOND;
+            Thread.sleep(sleepTime);
+        }
+    }
+
     /**
      * @author Elephant_1214
      * @reason Manually injecting this is not possible.
@@ -91,12 +108,10 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
         try {
             if (this.init()) {
                 TickLoopMode tickLoopMode = PaperFixesConfig.INSTANCE.enhancedTickLoopMode;
-                if (tickLoopMode != TickLoopMode.OFF) {
-                    PaperFixes.LOGGER.info("Using PaperFixes' enhanced tick loop, option: {}", tickLoopMode == TickLoopMode.KEEP_TPS_AT_OR_ABOVE_19 ? "\"Keep TPS at or above 19\"" : "\"Dynamic sleep time\"");
-                }
+                PaperFixes.LOGGER.info("Using PaperFixes' enhanced tick loop, option: {}", tickLoopMode == TickLoopMode.DYNAMIC_SLEEP_TIME ? "Dynamic sleep time" : "Keep TPS at or above 19");
 
                 FMLCommonHandler.instance().handleServerStarted();
-                this.currentTime = System.currentTimeMillis();
+                this.currentTime = MinecraftServer.getCurrentTimeMillis();
 
                 this.statusResponse.setServerDescription(new TextComponentString(this.motd));
                 this.statusResponse.setVersion(new ServerStatusResponse.Version("1.12.2", 340));
@@ -104,7 +119,6 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
 
                 this.paperFixes$nextTickTime = paperFixes$getNanos();
 
-                long tickSection = paperFixes$getNanos(), curTime;
                 while (this.serverRunning) {
                     long timeToNext = paperFixes$getNanos() - this.paperFixes$nextTickTime;
                     long ticksBehind = timeToNext / NANOS_PER_TICK;
@@ -114,7 +128,7 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                         this.paperFixes$catchupTicks = ticksBehind;
                     }
 
-                    if (timeToNext > OVERLOADED_THRESHOLD + 20L * NANOS_PER_TICK) {
+                    if (timeToNext > OVERLOADED_THRESHOLD + TICKS_PER_SECOND * NANOS_PER_TICK) {
                         if (this.paperFixes$nextTickTime - this.paperFixes$lastOverloadWarning >= OVERLOADED_WARNING_INTERVAL + 100L * NANOS_PER_TICK) {
                             LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", timeToNext / NANOS_PER_MILLI, ticksBehind);
                             this.paperFixes$nextTickTime += ticksBehind * NANOS_PER_TICK;
@@ -127,22 +141,11 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                         }
                     }
 
-                    if (++currentTick % TARGET_TPS == 0) {
-                        curTime = paperFixes$getNanos();
-                        final long diff = curTime - tickSection;
-                        BigDecimal currentTps = TickManager.INSTANCE.tpsBase.divide(new BigDecimal(diff), 30, HALF_UP);
-                        TickManager.INSTANCE.tps5s.add(currentTps, diff);
-                        TickManager.INSTANCE.tps1.add(currentTps, diff);
-                        TickManager.INSTANCE.tps5.add(currentTps, diff);
-                        TickManager.INSTANCE.tps15.add(currentTps, diff);
-                        tickSection = curTime;
-                    }
-
                     this.paperFixes$nextTickTime += NANOS_PER_TICK;
-                    this.currentTime = System.currentTimeMillis();
+                    this.currentTime = MinecraftServer.getCurrentTimeMillis();
                     this.tick();
 
-                    if (tickLoopMode != TickLoopMode.OFF && this.paperFixes$forceTicks && paperFixes$catchupTicks > 0) {
+                    if (this.paperFixes$forceTicks && paperFixes$catchupTicks > 0) {
                         this.paperFixes$nextTickTime = paperFixes$getNanos();
                         if (--this.paperFixes$catchupTicks == 0) {
                             this.paperFixes$forceTicks = false;
@@ -159,20 +162,20 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                 FMLCommonHandler.instance().expectServerStopped();
                 this.finalTick(null);
             }
-        } catch (StartupQuery.AbortedException var70) {
+        } catch (StartupQuery.AbortedException ignored) {
             FMLCommonHandler.instance().expectServerStopped();
-        } catch (Throwable var71) {
-            LOGGER.error("Encountered an unexpected exception", var71);
+        } catch (Throwable unexpectedException) {
+            LOGGER.error("Encountered an unexpected exception", unexpectedException);
             CrashReport crashreport;
-            if (var71 instanceof ReportedException) {
-                crashreport = this.addServerInfoToCrashReport(((ReportedException) var71).getCrashReport());
+            if (unexpectedException instanceof ReportedException) {
+                crashreport = this.addServerInfoToCrashReport(((ReportedException) unexpectedException).getCrashReport());
             } else {
-                crashreport = this.addServerInfoToCrashReport(new CrashReport("Exception in server tick loop", var71));
+                crashreport = this.addServerInfoToCrashReport(new CrashReport("Exception in server tick loop", unexpectedException));
             }
 
-            File file1 = new File(new File(this.getDataDirectory(), "crash-reports"), "crash-" + new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date()) + "-server.txt");
-            if (crashreport.saveToFile(file1)) {
-                LOGGER.error("This crash report has been saved to: {}", file1.getAbsolutePath());
+            File crashReport = new File(new File(this.getDataDirectory(), "crash-reports"), "crash-" + new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date()) + "-server.txt");
+            if (crashreport.saveToFile(crashReport)) {
+                LOGGER.error("This crash report has been saved to: {}", crashReport.getAbsolutePath());
             } else {
                 LOGGER.error("We were unable to save this crash report to disk.");
             }
@@ -189,25 +192,6 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                 this.serverStopped = true;
                 this.systemExitNow();
             }
-        }
-    }
-
-    @Unique
-    private boolean paperFixes$canSleep() {
-        return paperFixes$getNanos() < this.paperFixes$nextTickTime;
-    }
-
-    @Unique
-    private long paperFixes$calculateSleepTime() {
-        return this.paperFixes$nextTickTime - paperFixes$getNanos();
-    }
-
-    @Unique
-    private void paperFixes$sleepUntilNextTick() throws InterruptedException {
-        if (this.paperFixes$forceTicks) return;
-        if (paperFixes$canSleep()) {
-            final long sleepTime = paperFixes$calculateSleepTime() / 1000000L;
-            Thread.sleep(sleepTime);
         }
     }
 }

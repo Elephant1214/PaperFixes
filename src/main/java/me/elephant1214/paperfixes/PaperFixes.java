@@ -1,12 +1,13 @@
 package me.elephant1214.paperfixes;
 
-import me.elephant1214.paperfixes.command.CommandTPS;
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
-import me.elephant1214.paperfixes.configuration.TickLoopMode;
+import me.elephant1214.paperfixes.gamerule.SpawnChunkRule;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 @Mod(
@@ -16,19 +17,19 @@ import org.apache.logging.log4j.Logger;
         acceptedMinecraftVersions = "1.12.2",
         acceptableRemoteVersions = "*"
 )
-public class PaperFixes {
+public final class PaperFixes {
     public static final String NAME = "PaperFixes";
     public static final String MOD_ID = "paperfixes";
     public static final String VERSION = "1.3.1";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    @Mod.EventHandler
-    public void serverStartingEvent(FMLServerStartingEvent event) {
-        if (PaperFixesConfig.INSTANCE.enhancedTickLoopMode != TickLoopMode.OFF) {
-            event.registerServerCommand(new CommandTPS());
-        }
+    public PaperFixes() {
     }
 
-    public PaperFixes() {
+    @Mod.EventHandler
+    public void preInit(@NotNull FMLPreInitializationEvent event) {
+        if (PaperFixesConfig.INSTANCE.enableSpawnChunkGamerule) {
+            MinecraftForge.EVENT_BUS.register(new SpawnChunkRule());
+        }
     }
 }
