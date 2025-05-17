@@ -25,11 +25,11 @@ public final class CacheKey {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
 
-        CacheKey cacheKey = (CacheKey) o;
+        CacheKey cacheKey = (CacheKey) other;
 
         if (Double.compare(cacheKey.posX, posX) != 0) return false;
         if (Double.compare(cacheKey.posY, posY) != 0) return false;

@@ -1,7 +1,6 @@
 package me.elephant1214.paperfixes.mixin.common.world;
 
 import io.papermc.paper.CacheKey;
-import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import me.elephant1214.paperfixes.manager.ExplosionDensityCacheManager;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -27,9 +26,6 @@ public class MixinExplosion_ExplosionDensity {
             )
     )
     private float blockDensityCache(World world, Vec3d vector, AxisAlignedBB aabb) {
-        if (!PaperFixesConfig.INSTANCE.cacheBlockDensities) {
-            return this.world.getBlockDensity(vector, aabb);
-        }
         CacheKey key = new CacheKey((Explosion) (Object) this, aabb);
         Float blockDensity = ExplosionDensityCacheManager.INSTANCE.getCached(key);
         if (blockDensity == null) {

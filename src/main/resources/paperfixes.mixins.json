@@ -6,6 +6,9 @@
     "plugin": "me.elephant1214.paperfixes.core.PFMixinConfigPlugin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
+        "common.block.MixinBlockBeacon",
+        "common.block.MixinBlockBeacon$1",
+        "common.block.MixinBlockShulkerBox",
         "common.entity.MixinEntity",
         "common.entity.MixinRangedAttribute",
         "common.entity.passive.MixinEntitySquid",
@@ -14,13 +17,11 @@
         "common.nbt.accessor.AccessorNBTTagList",
         "common.network.MixinNetworkManager",
         "common.network.datasync.MixinEntityDataManager",
-        "common.network.invoker.InvokerNetHandlerPlayServer",
         "common.server.MixinMinecraftServer",
         "common.server.MixinMinecraftServer_ExplosionDensity",
         "common.tileentity.MixinTileEntity",
         "common.world.MixinExplosion",
         "common.world.MixinExplosion_ExplosionDensity",
-        "common.world.MixinTeleporter",
         "common.world.MixinWorld",
         "common.world.MixinWorld_SpawnChunkGamerule",
         "common.world.accessor.AccessorExplosion",
@@ -33,11 +34,11 @@
         "common.world.chunk.storage.MixinThreadedFileIOBase",
         "common.world.gen.MixinChunkProviderServer"
     ],
-    "server": [
-        "server.tileentity.MixinTileEntityChest"
-    ],
     "client": [
         "client.multiplayer.MixinChunkProviderClient"
+    ],
+    "server": [
+        "server.tileentity.MixinTileEntityChest"
     ],
     "overwrites": {
         "conformVisibility": true

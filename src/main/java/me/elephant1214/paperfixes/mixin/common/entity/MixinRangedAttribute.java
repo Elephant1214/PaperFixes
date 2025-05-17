@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RangedAttribute.class)
 public abstract class MixinRangedAttribute extends BaseAttribute {
-    private MixinRangedAttribute(@Nullable IAttribute iAttribute, String string, double d) {
-        super(iAttribute, string, d);
+    private MixinRangedAttribute(@Nullable IAttribute iAttribute, String string, double value) {
+        super(iAttribute, string, value);
     }
 
     @Inject(method = "clampValue", at = @At("HEAD"), cancellable = true)
     private void mc133373(double value, CallbackInfoReturnable<Double> cir) {
-        if (value != value) {
+        if (Double.isNaN(value)) {
             cir.setReturnValue(this.getDefaultValue());
             cir.cancel();
         }

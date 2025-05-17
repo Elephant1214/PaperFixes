@@ -1,11 +1,11 @@
 package me.elephant1214.paperfixes.mixin.common.entity.passive;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Random;
 
@@ -15,13 +15,8 @@ public abstract class MixinEntitySquid extends EntityWaterMob {
         super(world);
     }
 
-    @Redirect(
-            method = "<init>",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Random;setSeed(J)V"
-            )
-    )
-    private void ignoreSetSeed(Random instance, long seed) {
+    @WrapWithCondition(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/Random;setSeed(J)V"))
+    private boolean ignoreSetSeed(Random instance, long seed) {
+        return false;
     }
 }

@@ -35,18 +35,12 @@ public class MixinItemStack {
         this.paperFixes$fixEnchantOrder(this.stackTagCompound);
     }
 
-    @Inject(
-            method = "setTagCompound",
-            at = @At("TAIL")
-    )
+    @Inject(method = "setTagCompound", at = @At("TAIL"))
     private void setTagFixEnchantOrder(NBTTagCompound nbt, CallbackInfo ci) {
         this.paperFixes$fixEnchantOrder(this.stackTagCompound);
     }
 
-    @Inject(
-            method = "addEnchantment",
-            at = @At("TAIL")
-    )
+    @Inject(method = "addEnchantment", at = @At("TAIL"))
     private void addEnchantFixEnchantOrder(Enchantment ench, int level, CallbackInfo ci) {
         this.paperFixes$fixEnchantOrder(this.stackTagCompound);
     }

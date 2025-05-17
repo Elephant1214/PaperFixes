@@ -14,14 +14,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinMinecraftServer_ExplosionDensity implements ICommandSender, Runnable, IThreadListener, ISnooperInfo {
     @Inject(
             method = "stopServer",
-            at = @At(value = "INVOKE",
+            at = @At(
+                    value = "INVOKE",
                     target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
                     shift = At.Shift.AFTER,
                     ordinal = 0,
                     remap = false
             )
     )
-    private void clearExplosionDensityCache(CallbackInfo ci) {
+    private void clearCacheOnStop(CallbackInfo ci) {
+        ExplosionDensityCacheManager.INSTANCE.clearCache();
+    }
+
+    @Inject(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;saveAllPlayerData()V"))
+    private void clearCacheOnReload(CallbackInfo ci) {
         ExplosionDensityCacheManager.INSTANCE.clearCache();
     }
 }

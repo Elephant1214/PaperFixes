@@ -18,7 +18,7 @@ public abstract class MixinThreadedFileIOBase implements Runnable {
             )
     )
     private void onlySleepIfEnabled(long time, Operation<Void> original) {
-        if (PaperFixesConfig.INSTANCE.allowIoThreadSleep) {
+        if (PaperFixesConfig.INSTANCE.performance.allowIoThreadSleep) {
             original.call(2L);
         }
     }

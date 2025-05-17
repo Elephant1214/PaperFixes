@@ -29,14 +29,7 @@ public abstract class MixinEntity implements ICommandSender, ICapabilitySerializ
         }
     };
 
-    @Redirect(
-            method = "<init>",
-            at = @At(
-                    value = "NEW",
-                    target = "java/util/Random",
-                    remap = false
-            )
-    )
+    @Redirect(method = "<init>", at = @At(value = "NEW", target = "java/util/Random", remap = false))
     private Random useSharedRandom() {
         return SHARED_RANDOM;
     }

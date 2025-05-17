@@ -3,13 +3,12 @@ plugins {
     java
     id("gg.essential.loom") version ("1.9.31")
     id("dev.architectury.architectury-pack200") version ("0.1.3")
-    id("com.github.johnrengelman.shadow") version ("8.1.1")
 }
 
 val modGroup: String by project
 val modID: String by project
 group = modGroup
-version = "1.3.1"
+version = "2.0.0-SNAPSHOT"
 
 loom {
     runs {
@@ -38,10 +37,6 @@ sourceSets.main {
     output.dir("${layout.buildDirectory.get()}/classes/java/main")
 }
 
-configurations.implementation {
-    extendsFrom(configurations.getByName("shadow"))
-}
-
 repositories {
     maven("https://maven.cleanroommc.com")
     maven("https://repo.spongepowered.org/repository/maven-public")
@@ -55,10 +50,9 @@ dependencies {
     annotationProcessor("com.google.guava:guava:33.2.1-jre")
     annotationProcessor("com.google.code.gson:gson:2.10")
 
-    implementation("zone.rong:mixinbooter:9.1")
-    annotationProcessor("org.spongepowered:mixin:0.8.3")
-    shadow("io.github.llamalad7:mixinextras-common:0.3.6")
-    annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6")
+    implementation("zone.rong:mixinbooter:10.6")
+    annotationProcessor("org.spongepowered:mixin:0.8.7")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0-rc.1")
 }
 
 val javaTarget = "8"
@@ -90,15 +84,6 @@ tasks {
         }
         from(project.file("LICENSE")) { rename { "LICENSE_PaperFixes.txt" } }
     }
-    shadowJar {
-        configurations = listOf(project.configurations.getByName("shadow"))
-        relocate("com.llamalad7.mixinextras", "$modGroup.mixinextras")
-        mergeServiceFiles()
-        archiveClassifier = "deobf"
-    }
-    remapJar {
-        inputFile.set(shadowJar.get().archiveFile)
-    }
     jar {
         manifest.attributes(
             "FMLCorePlugin" to ("$modGroup.core.PFLoadingPlugin"),
@@ -107,7 +92,6 @@ tasks {
             "ForceLoadAsMod" to "true",
         )
         duplicatesStrategy = DuplicatesStrategy.WARN
-        dependsOn(shadowJar)
     }
 }
 

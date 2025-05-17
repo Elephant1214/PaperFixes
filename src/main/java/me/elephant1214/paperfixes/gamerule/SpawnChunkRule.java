@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SpawnChunkRule {
     public static final String SPAWN_CHUNK_RADIUS_RULE = "spawnChunkRadius";
-    public static int radius = PaperFixesConfig.INSTANCE.defaultSpawnChunkRadius;
+    public static int radius = PaperFixesConfig.INSTANCE.features.defaultSpawnChunkRadius;
 
     @SubscribeEvent
     public void worldLoad(@NotNull WorldEvent.Load event) {
