@@ -1,6 +1,7 @@
 package me.elephant1214.paperfixes.configuration.parts;
 
 public class Bugfixes {
+    public boolean avoidItemMergeForFullStacks = true;
     public boolean clearPacketQueue = true;
     public boolean fixMc54738 = true;
     public boolean fixMc80966 = true;

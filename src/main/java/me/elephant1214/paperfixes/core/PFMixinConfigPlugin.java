@@ -32,6 +32,9 @@ public class PFMixinConfigPlugin implements IMixinConfigPlugin {
             case "me.elephant1214.paperfixes.mixin.common.entity.MixinEntity":
                 if (!PaperFixesConfig.INSTANCE.performance.useSharedRandomForEntities) return false;
                 break;
+            case "me.elephant1214.paperfixes.mixin.common.entity.MixinEntityItem":
+                if (!PaperFixesConfig.INSTANCE.bugfixes.avoidItemMergeForFullStacks) return false;
+                break;
             case "me.elephant1214.paperfixes.mixin.common.entity.MixinRangedAttribute":
                 if (!PaperFixesConfig.INSTANCE.bugfixes.fixMc133373) return false;
                 break;
@@ -52,7 +55,7 @@ public class PFMixinConfigPlugin implements IMixinConfigPlugin {
                 if (!PaperFixesConfig.INSTANCE.performance.optimizedEntityDataMap) return false;
                 break;
             case "me.elephant1214.paperfixes.mixin.common.server.MixinMinecraftServer":
-                if (!PaperFixesConfig.INSTANCE.features.improvedTickLoop) return false;
+                if (!PaperFixesConfig.INSTANCE.features.useImprovedTickLoop) return false;
                 break;
             case "me.elephant1214.paperfixes.mixin.common.tileentity.MixinTileEntity":
                 if (!PaperFixesConfig.INSTANCE.bugfixes.preventHangingTeCrashes) return false;
@@ -64,6 +67,9 @@ public class PFMixinConfigPlugin implements IMixinConfigPlugin {
             case "me.elephant1214.paperfixes.mixin.common.world.MixinExplosion_ExplosionDensity":
             case "me.elephant1214.paperfixes.mixin.common.server.MixinMinecraftServer_ExplosionDensity":
                 if (!PaperFixesConfig.INSTANCE.performance.cacheBlockDensities) return false;
+                break;
+            case "me.elephant1214.paperfixes.mixin.common.server.MixinMinecraftServer_TaskScheduler":
+                if (!PaperFixesConfig.INSTANCE.features.useImprovedTaskScheduler) return false;
                 break;
             case "me.elephant1214.paperfixes.mixin.common.world.MixinTeleporter":
             case "me.elephant1214.paperfixes.mixin.common.network.invoker.InvokerNetHandlerPlayServer":
