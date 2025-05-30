@@ -1,6 +1,6 @@
 package io.papermc.paper;
 
-import me.elephant1214.paperfixes.mixin.common.world.accessor.AccessorExplosion;
+import me.elephant1214.paperfixes.mixin.common.world.cache_densities.AccessorExplosion;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;

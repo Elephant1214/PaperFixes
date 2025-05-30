@@ -1,6 +1,9 @@
 package me.elephant1214.paperfixes.configuration;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.elephant1214.paperfixes.PaperFixes;
 import me.elephant1214.paperfixes.configuration.parts.Bugfixes;
 import me.elephant1214.paperfixes.configuration.parts.Features;

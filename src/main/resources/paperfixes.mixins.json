@@ -6,46 +6,57 @@
     "plugin": "me.elephant1214.paperfixes.core.PFMixinConfigPlugin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "common.block.MixinBlockBeacon",
-        "common.block.MixinBlockBeacon$1",
-        "common.block.MixinBlockShulkerBox",
-        "common.entity.MixinEntity",
-        "common.entity.MixinEntityItem",
-        "common.entity.MixinRangedAttribute",
-        "common.entity.passive.MixinEntitySquid",
-        "common.entity.passive.MixinEntityWaterMob",
-        "common.item.MixinItemStack",
-        "common.nbt.accessor.AccessorNBTTagList",
-        "common.network.MixinNetworkManager",
-        "common.network.datasync.MixinEntityDataManager",
-        "common.server.MixinMinecraftServer",
-        "common.server.MixinMinecraftServer_ExplosionDensity",
-        "common.server.MixinMinecraftServer_TaskScheduler",
-        "common.tileentity.MixinTileEntity",
-        "common.world.MixinExplosion",
-        "common.world.MixinExplosion_ExplosionDensity",
-        "common.world.MixinWorld",
-        "common.world.MixinWorld_SpawnChunkGamerule",
-        "common.world.accessor.AccessorExplosion",
-        "common.world.chunk.MixinChunk",
-        "common.world.chunk.MixinChunkGeneratorOverworld",
-        "common.world.chunk.MixinExtendedBlockStorage",
-        "common.world.chunk.storage.MixinAnvilChunkLoader",
-        "common.world.chunk.storage.MixinRegionFile",
-        "common.world.chunk.storage.MixinRegionFileCache",
-        "common.world.chunk.storage.MixinThreadedFileIOBase",
-        "common.world.gen.MixinChunkProviderServer"
+        "common.block.dont_offload_beacon.MixinBlockBeacon",
+        "common.block.dont_offload_beacon.MixinBlockBeacon$1",
+        "common.block.shulker_dupe.MixinBlockShulkerBox",
+        "common.entity.bugfix.MixinRangedAttribute",
+        "common.entity.ignore_full_stack.MixinEntityItem",
+        "common.entity.optimize_pathfinding.MixinPathNavigate",
+        "common.entity.shared_random.MixinEntity",
+        "common.entity.shared_random.MixinEntitySquid",
+        "common.entity.skip_team_check.MixinCommandScoreboard",
+        "common.entity.skip_team_check.MixinEntity",
+        "common.entity.water_spawn_check.MixinEntityWaterMob",
+        "common.item.sort_enchants.AccessorNBTTagList",
+        "common.item.sort_enchants.MixinItemStack",
+        "common.network.clear_packet_queue.MixinNetworkManager",
+        "common.network.fast_data_mgr.MixinEntityDataManager",
+        "common.server.improved_tick_loop.MixinMinecraftServer",
+        "common.server.optimize_task_queue.MixinMinecraftServer",
+        "common.server.task_scheduler.MixinMinecraftServer",
+        "common.tileentity.handle_null_tile_crash.MixinTileEntity",
+        "common.world.bugfix.InvokerNetHandlerPlayServer",
+        "common.world.bugfix.MixinExtendedBlockStorage",
+        "common.world.bugfix.MixinTeleporter",
+        "common.world.cache_densities.AccessorExplosion",
+        "common.world.cache_densities.MixinExplosion",
+        "common.world.cache_densities.MixinMinecraftServer",
+        "common.world.cache_last_chunk.MixinChunkProviderServer",
+        "common.world.chunk.bugfixes.MixinChunkGeneratorOverworld",
+        "common.world.chunk.no_io_sleep.MixinThreadedFileIOBase",
+        "common.world.chunk.queue_saves.MixinAnvilChunkLoader",
+        "common.world.chunk.remove_invalid_spawners.MixinChunk",
+        "common.world.chunk.smart_region_read.MixinRegionFile",
+        "common.world.chunk.trim_region_cache.MixinRegionFileCache",
+        "common.world.del_unused_tile_list.MixinWorld",
+        "common.world.explosions_ignore_dead.MixinExplosion",
+        "common.world.spawn_chunk_gr.MixinWorld"
     ],
     "client": [
-        "client.multiplayer.MixinChunkProviderClient"
+        "client.multiplayer.cache_last_chunk.MixinChunkProviderClient"
     ],
     "server": [
-        "server.tileentity.MixinTileEntityChest"
+        "server.tileentity.smarter_chest_anim.MixinTileEntityChest",
+        "server.world.cache_border.MixinWorld",
+        "server.world.cache_border.MixinWorldBorder"
     ],
     "overwrites": {
         "conformVisibility": true
     },
     "injectors": {
         "defaultRequire": 1
+    },
+    "mixinextras": {
+        "minVersion": "0.5.0-rc.1"
     }
 }

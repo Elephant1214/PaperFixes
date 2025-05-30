@@ -2,9 +2,11 @@ package me.elephant1214.paperfixes;
 
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import me.elephant1214.paperfixes.gamerule.SpawnChunkRule;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -31,5 +33,19 @@ public final class PaperFixes {
         if (PaperFixesConfig.INSTANCE.features.enableSpawnChunkGamerule) {
             MinecraftForge.EVENT_BUS.register(new SpawnChunkRule());
         }
+    }
+
+    private static MinecraftServer server = null;
+
+    /**
+     * Should be always considered null unless there is a server running.
+     */
+    public static MinecraftServer getServer() {
+        return server;
+    }
+
+    @Mod.EventHandler
+    public void serverAboutToStart(@NotNull FMLServerAboutToStartEvent event) {
+        server = event.getServer();
     }
 }
