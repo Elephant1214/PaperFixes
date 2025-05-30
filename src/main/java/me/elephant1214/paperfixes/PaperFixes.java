@@ -17,12 +17,13 @@ import org.jetbrains.annotations.NotNull;
         modid = PaperFixes.MOD_ID,
         version = PaperFixes.VERSION,
         acceptedMinecraftVersions = "1.12.2",
-        acceptableRemoteVersions = "*"
+        acceptableRemoteVersions = "*",
+        dependencies = "required-after:mixinbooter@[10.0,);"
 )
 public final class PaperFixes {
     public static final String NAME = "PaperFixes";
     public static final String MOD_ID = "paperfixes";
-    public static final String VERSION = "2.0.0-SNAPSHOT";
+    public static final String VERSION = "2.0.0-beta.1";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     public PaperFixes() {
