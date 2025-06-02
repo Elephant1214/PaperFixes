@@ -2,11 +2,14 @@ package me.elephant1214.paperfixes;
 
 import me.elephant1214.paperfixes.configuration.PaperFixesConfig;
 import me.elephant1214.paperfixes.gamerule.SpawnChunkRule;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
         modid = PaperFixes.MOD_ID,
         version = PaperFixes.VERSION,
         acceptedMinecraftVersions = "1.12.2",
-        acceptableRemoteVersions = "*",
-        dependencies = "required-after:mixinbooter@[10.0,);"
+        acceptableRemoteVersions = "*"/*,
+        dependencies = "required-after:mixinbooter@[10.0,);"*/
 )
 public final class PaperFixes {
     public static final String NAME = "PaperFixes";
@@ -43,6 +46,12 @@ public final class PaperFixes {
      */
     public static MinecraftServer getServer() {
         return server;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static boolean isOnServer() {
+        final Minecraft minecraft = Minecraft.getMinecraft();
+        return minecraft.isSingleplayer() || minecraft.getCurrentServerData() != null;
     }
 
     @Mod.EventHandler

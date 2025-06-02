@@ -12,7 +12,6 @@ public class Bugfixes {
     public boolean dontOffloadBeaconColorUpdate = true;
     public boolean preventHangingTeCrashes = true;
     public boolean removeInvalidMobSpawners = true;
-    public boolean removeNullTileEntities = false;
     public boolean sortEnchantments = true;
     public boolean stopDeadEntityProcessing = true;
 }

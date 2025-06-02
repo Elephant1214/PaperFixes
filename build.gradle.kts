@@ -23,7 +23,7 @@ loom {
     }
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
-        mixinConfigs("paperfixes.mixins.json", "paperfixes.mixins.init.json")
+        mixinConfigs("$modID.mixins.json", "$modID.mixins.init.json")
         accessTransformer("src/main/resources/${properties["accessTransformer"]}")
     }
     @Suppress("UnstableApiUsage")

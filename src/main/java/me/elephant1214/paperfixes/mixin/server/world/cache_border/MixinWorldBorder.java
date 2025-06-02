@@ -31,7 +31,6 @@ public abstract class MixinWorldBorder implements MixinUpdateHook {
 
     @Inject(method = "setTransition(D)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/border/WorldBorder;getListeners()Ljava/util/List;"))
     private void updateForTransition(double newSize, CallbackInfo ci) {
-        System.out.println("Transition");
         this.paperFixes$smarterBorder.recompute();
     }
 

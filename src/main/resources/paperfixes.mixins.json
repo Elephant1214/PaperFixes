@@ -38,7 +38,6 @@
         "common.world.chunk.remove_invalid_spawners.MixinChunk",
         "common.world.chunk.smart_region_read.MixinRegionFile",
         "common.world.chunk.trim_region_cache.MixinRegionFileCache",
-        "common.world.del_unused_tile_list.MixinWorld",
         "common.world.explosions_ignore_dead.MixinExplosion",
         "common.world.spawn_chunk_gr.MixinWorld"
     ],
