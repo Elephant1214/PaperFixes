@@ -2,8 +2,8 @@
     {
         "modid": "paperfixes",
         "name": "PaperFixes",
-        "description": "A collection of bug and performance fixes from CraftBukkit, Spigot, and Paper in a Forge mod.",
-        "version": "2.0.0-beta.1",
+        "description": "A collection of bug and performance fixes from CraftBukkit, Spigot, Paper, and Paper forks in a Forge mod.",
+        "version": "2.0.0-rc.1",
         "mcversion": "1.12.2",
         "license": "GPL-3.0",
         "logoFile": "assets/paperfixes/paperfixes-icon.png",
@@ -11,8 +11,14 @@
         "authorList": [
             "Elephant_1214"
         ],
+        "useDependencyInformation": true,
+        "requiredMods": [
+            "mixinbooter@[10.0,)",
+            "configanytime@[3.0,)"
+        ],
         "dependencies": [
-            "mixinbooter"
+            "mixinbooter@[10.0,)",
+            "configanytime@[3.0,)"
         ]
     }
 ]

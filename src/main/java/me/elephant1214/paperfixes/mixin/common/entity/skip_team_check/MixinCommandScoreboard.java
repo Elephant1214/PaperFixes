@@ -16,7 +16,7 @@ public abstract class MixinCommandScoreboard extends CommandBase {
     @ModifyExpressionValue(method = "joinTeam", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/server/CommandScoreboard;getEntityList(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Ljava/util/List;"))
     private List<Entity> removeNonPlayers(List<Entity> original) {
         return original.stream()
-                .filter(entity -> !(entity instanceof EntityPlayer))
+                .filter(entity -> entity instanceof EntityPlayer)
                 .collect(Collectors.toList());
     }
 }

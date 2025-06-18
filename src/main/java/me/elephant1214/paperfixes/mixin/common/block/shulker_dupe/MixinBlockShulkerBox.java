@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(BlockShulkerBox.class)
+@Mixin(value = BlockShulkerBox.class, priority = 500)
 public abstract class MixinBlockShulkerBox extends BlockContainer {
     protected MixinBlockShulkerBox(Material material, MapColor mapColor) {
         super(material, mapColor);

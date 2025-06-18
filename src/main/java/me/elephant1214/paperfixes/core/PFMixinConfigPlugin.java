@@ -20,14 +20,68 @@ public class PFMixinConfigPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (!mixinClassName.startsWith("me.elephant1214.paperfixes.mixin")) {
+    public boolean shouldApplyMixin(String target, String mixin) {
+        if (!mixin.startsWith("me.elephant1214.paperfixes.mixin")) {
             return true;
         }
 
-        // temporary way to force the config to init
-        boolean cacheLastChunk = PaperFixesConfig.INSTANCE.performance.cacheLastChunk;
-        return true;
+        if (mixin.contains("multiplayer.cache_last_chunk")) {
+            return PaperFixesConfig.performance.clientCacheLastChunk;
+        } else if (mixin.contains("fast_chests")) {
+            return PaperFixesConfig.performance.fastChests;
+        } else if (mixin.contains("fast_border")) {
+            return PaperFixesConfig.features.useFastBorder();
+        } else if (mixin.contains("dont_offload_beacon")) {
+            return PaperFixesConfig.bugfixes.dontOffloadBeaconColorUpdate;
+        } else if (mixin.contains("shulker_dupe")) {
+            return PaperFixesConfig.bugfixes.fixShulkerDupe;
+        } else if (mixin.endsWith("MixinRangedAttribute")) {
+            return PaperFixesConfig.bugfixes.fixMc133373;
+        } else if (mixin.contains("ignore_full_stack")) {
+            return PaperFixesConfig.bugfixes.avoidItemMergeForFullStacks;
+        } else if (mixin.contains("optimize_pathfinding")) {
+            return PaperFixesConfig.performance.optimizePathfinding;
+        } else if (mixin.contains("shared_random")) {
+            return PaperFixesConfig.performance.useSharedRandomForEntities;
+        } else if (mixin.contains("water_spawn_check")) {
+            return PaperFixesConfig.bugfixes.fixWaterMobSpawnCheck;
+        } else if (mixin.contains("sort_enchants")) {
+            return PaperFixesConfig.bugfixes.sortEnchantments;
+        } else if (mixin.contains("clear_packet_queue")) {
+            return PaperFixesConfig.bugfixes.clearPacketQueue;
+        } else if (mixin.contains("fast_data_mgr")) {
+            return PaperFixesConfig.performance.fastEntityDataMap;
+        } else if (mixin.contains("improved_tick_loop")) {
+            return PaperFixesConfig.features.useImprovedTickLoop;
+        } else if (mixin.contains("optimize_task_queue")) {
+            return PaperFixesConfig.performance.optimizedTaskQueue;
+        } else if (mixin.contains("handle_null_tile_crash")) {
+            return PaperFixesConfig.bugfixes.handleNullTileCrashes;
+        } else if (mixin.endsWith("MixinTeleporter") || mixin.endsWith("InvokerNetHandlerPlayServer")) {
+            return PaperFixesConfig.bugfixes.fixMc98153;
+        } else if (mixin.endsWith("MixinExtendedBlockStorage")) {
+            return PaperFixesConfig.bugfixes.fixMc80966;
+        } else if (mixin.contains("cache_densities")) {
+            return PaperFixesConfig.performance.cacheBlockDensities;
+        } else if (mixin.contains("common.world.cache_last_chunk")) {
+            return PaperFixesConfig.performance.cacheLastChunk;
+        } else if (mixin.contains("explosions_ignore_dead")) {
+            return PaperFixesConfig.bugfixes.explosionsIgnoreDeadEntities;
+        } else if (mixin.contains("spawn_chunk_gr")) {
+            return PaperFixesConfig.features.enableSpawnChunkGamerule;
+        } else if (mixin.endsWith("MixinChunkGeneratorOverworld")) {
+            return PaperFixesConfig.bugfixes.fixMc54738;
+        } else if (mixin.contains("queue_saves")) {
+            return PaperFixesConfig.performance.queueChunkSaving;
+        } else if (mixin.contains("remove_invalid_spawners")) {
+            return PaperFixesConfig.bugfixes.removeInvalidMobSpawners;
+        } else if (mixin.contains("smart_region_read")) {
+            return PaperFixesConfig.performance.smartRegionRead;
+        } else if (mixin.contains("trim_region_cache")) {
+            return PaperFixesConfig.performance.trimRegionCache;
+        }
+
+        return false;
     }
 
     @Override

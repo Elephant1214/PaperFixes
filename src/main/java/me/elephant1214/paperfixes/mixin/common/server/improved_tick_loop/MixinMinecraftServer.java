@@ -81,11 +81,13 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
 
     /**
      * True when a task was run, false when disabled or when there are no tasks to run.
+     * This is basically to take some of the load off of tick and not have it run the
+     * entire queue.
      */
     @SuppressWarnings("SynchronizeOnNonFinalField")
     @Unique
-    private boolean paperFixes$checkForAndRunTask() {
-        if (!PaperFixesConfig.INSTANCE.features.useImprovedTaskScheduler) return false;
+    private boolean paperFixes$tryRunTasks() {
+        if (!PaperFixesConfig.features.runScheduledTasksDuringSleep) return false;
 
         synchronized (this.futureTaskQueue) {
             if (!this.futureTaskQueue.isEmpty()) {
@@ -95,31 +97,6 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
         }
 
         return false;
-    }
-
-    /**
-     * WIP alternative sleep handling, based on sleep logic by Andy Malakov shown
-     * <a href="https://andy-malakov.blogspot.com/2010/06/alternative-to-threadsleep.html">in his blog</a>.
-     */
-    @Unique
-    private static void paperFixes$sleepNanos(long nanos) throws InterruptedException {
-        final long end = System.nanoTime() + nanos;
-        long timeLeft = nanos;
-        do {
-            if (timeLeft > 1_000_000L) {
-                Thread.sleep(1);
-            } else if (timeLeft > PaperFixesConfig.INSTANCE.features.tickLoopSpinTime) {
-                Thread.sleep(0);
-            }
-
-            timeLeft = end - System.nanoTime();
-
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-
-        } while (timeLeft > 0);
-
     }
 
     /**
@@ -137,8 +114,8 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                 return;
             }
 
-            PaperFixes.LOGGER.info("Using PaperFixes' improved tick loop, spin time {} ns", PaperFixesConfig.INSTANCE.features.tickLoopSpinTime);
-            if (PaperFixesConfig.INSTANCE.features.useImprovedTaskScheduler) {
+            PaperFixes.LOGGER.info("Using PaperFixes' improved tick loop, spin time {} ns", PaperFixesConfig.features.tickLoopSpinTime);
+            if (PaperFixesConfig.features.runScheduledTasksDuringSleep) {
                 PaperFixes.LOGGER.info("Using PaperFixes' improved task scheduler");
             }
 
@@ -149,21 +126,13 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
             this.statusResponse.setVersion(new ServerStatusResponse.Version("1.12.2", 340));
             this.applyServerIconToResponse(this.statusResponse);
 
-            long expectedNextTickStart = System.nanoTime();
+            long nextTickStart = System.nanoTime();
             // Stops the server from reporting an overload in console on startup
-            long lastOverloadWarning = expectedNextTickStart;
+            long lastOverloadWarning = nextTickStart + OVERLOADED_THRESHOLD + OVERLOADED_WARNING_INTERVAL;
             while (this.serverRunning) {
-                this.tick(); // Tick the game
-                this.currentTime = System.currentTimeMillis(); // See the doc on the shadowed field
-
-                // If the server is catching up, remove the current tick from the count
-                if (this.paperFixes$catchupTicks > 0L) {
-                    this.paperFixes$catchupTicks -= 1L;
-                }
-
                 long now = System.nanoTime();
-                long nanosBehind = now - expectedNextTickStart;
-                if (nanosBehind > OVERLOADED_THRESHOLD && this.paperFixes$catchupTicks == 0L) {
+                long nanosBehind = now - nextTickStart;
+                if (nanosBehind > OVERLOADED_THRESHOLD) {
                     this.paperFixes$catchupTicks = nanosBehind / NANOS_PER_TICK;
 
                     if (now - lastOverloadWarning >= OVERLOADED_WARNING_INTERVAL) {
@@ -172,15 +141,25 @@ public abstract class MixinMinecraftServer implements ICommandSender, Runnable, 
                     }
                 }
 
-                expectedNextTickStart += NANOS_PER_TICK;
+                nextTickStart += NANOS_PER_TICK;
+
+                this.tick(); // Tick the game
+                this.currentTime = System.currentTimeMillis(); // See the doc on the shadowed field
+
+                // If the server is catching up, remove the current tick from the count
+                if (this.paperFixes$catchupTicks > 0L) {
+                    this.paperFixes$catchupTicks -= 1L;
+                }
 
                 if (this.paperFixes$catchupTicks == 0L) {
-                    while ((now = System.nanoTime()) < expectedNextTickStart) {
-                        long remaining = expectedNextTickStart - now;
-                        if (remaining > PaperFixesConfig.INSTANCE.features.tickLoopSpinTime) {
-                            if (!this.paperFixes$checkForAndRunTask()) {
-                                LockSupport.parkNanos("waiting for next tick", remaining);
+                    while ((now = System.nanoTime()) < nextTickStart) {
+                        long remaining = nextTickStart - now;
+                        if (remaining > (long) PaperFixesConfig.features.tickLoopSpinTime) {
+                            if (!this.paperFixes$tryRunTasks()) {
+                                LockSupport.parkNanos(remaining); // Park nanos tends to unpark about 70-90 micros early
                             }
+                        } else {
+                            // spin
                         }
                     }
                 }

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class MixinThreadedFileIOBase implements Runnable {
     @WrapOperation(method = "processQueue", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;sleep(J)V", ordinal = 0))
     private void onlySleepIfEnabled(long time, Operation<Void> original) {
-        if (PaperFixesConfig.INSTANCE.performance.allowIoThreadSleep) {
+        if (PaperFixesConfig.performance.allowIoThreadSleep) {
             original.call(2L);
         }
     }

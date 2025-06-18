@@ -10,3 +10,5 @@ pluginManagement {
 }
 
 rootProject.name = "PaperFixes"
+
+include("agent")

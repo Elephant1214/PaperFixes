@@ -1,96 +1,82 @@
 package me.elephant1214.paperfixes.configuration;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.cleanroommc.configanytime.ConfigAnytime;
 import me.elephant1214.paperfixes.PaperFixes;
-import me.elephant1214.paperfixes.configuration.parts.Bugfixes;
-import me.elephant1214.paperfixes.configuration.parts.Features;
-import me.elephant1214.paperfixes.configuration.parts.Performance;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.util.math.MathHelper;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.common.config.Config;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import static me.elephant1214.paperfixes.util.TickConstants.NANOS_PER_MILLI;
 
+@Config(modid = PaperFixes.MOD_ID)
 public final class PaperFixesConfig {
-    final ConfigContent content;
-    public final Bugfixes bugfixes;
-    public final Features features;
-    public final Performance performance;
-    public static final PaperFixesConfig INSTANCE = new PaperFixesConfig();
+    public static Bugfixes bugfixes = new Bugfixes();
+    public static Features features = new Features();
+    public static Performance performance = new Performance();
 
-    private final @NotNull Path CONFIG_FILE = new File(Launch.minecraftHome, "config" + File.separator + "paperfixes.json").toPath();
+    @Config.RequiresMcRestart
+    public static class Bugfixes {
+        public boolean avoidItemMergeForFullStacks = true;
+        public boolean clearPacketQueue = true;
+        public boolean fixMc54738 = true;
+        public boolean fixMc80966 = true;
+        public boolean fixMc133373 = true;
+        public boolean fixMc98153 = true;
+        public boolean fixShulkerDupe = true;
+        public boolean fixWaterMobSpawnCheck = true;
+        public boolean dontOffloadBeaconColorUpdate = true;
+        public boolean handleNullTileCrashes = true;
+        public boolean removeInvalidMobSpawners = true;
+        public boolean sortEnchantments = true;
+        public boolean explosionsIgnoreDeadEntities = true;
+    }
 
-    private PaperFixesConfig() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    @Config.RequiresMcRestart
+    public static class Features {
+        public boolean enableSpawnChunkGamerule = true;
+        @Config.Comment("Only applies to new worlds and worlds that have not previously run with PaperFixes 2.0.0-beta.1 or newer")
+        @Config.RangeInt(min = 0, max = 32)
+        public int defaultSpawnChunkRadius = 3;
+        public boolean useImprovedTickLoop = true;
+        @Config.RangeInt(min = 0, max = (int) NANOS_PER_MILLI)
+        public int tickLoopSpinTime = 200000;
+        @Config.Comment("Requires the improved took loop to be enabled. This might be changed down the road.")
+        public boolean runScheduledTasksDuringSleep = true;
+        @Config.Comment("Only applies to dedicated servers. Border movement animations break when applying this on a client.")
+        public boolean fastWorldBorder = true;
+        @Config.Comment("If you do not care about world border movement animations and want PaperFixes to cache the world border on the client and integrated server anyway, use this option.")
+        public boolean clientFastWorldBorder = false;
 
-        ConfigContent tempContent = new ConfigContent();
+        public boolean useFastBorder() {
+            return this.fastWorldBorder && (MixinEnvironment.getCurrentEnvironment().getSide() != MixinEnvironment.Side.CLIENT || this.clientFastWorldBorder);
+        }
+    }
+
+    @Config.RequiresMcRestart
+    public static class Performance {
+        public boolean allowIoThreadSleep = false;
+        public boolean cacheBlockDensities = true;
+        public boolean cacheLastChunk = true;
+        public boolean clientCacheLastChunk = true;
+        public boolean fastChests = true;
+        public boolean smartRegionRead = true;
+        public boolean fastEntityDataMap = true;
+        public boolean optimizePathfinding = true;
+        public boolean optimizedTaskQueue = true;
+        public boolean queueChunkSaving = true;
+        public boolean trimRegionCache = true;
+        public boolean useSharedRandomForEntities = true;
+    }
+
+    static {
         try {
-            if (Files.notExists(CONFIG_FILE)) {
-                Files.createDirectories(CONFIG_FILE.getParent());
-                Files.createFile(CONFIG_FILE);
-                saveConfig(gson, tempContent);
-            } else {
-                tempContent = readConfig(gson);
-            }
-        } catch (Exception e) {
-            PaperFixes.LOGGER.error("Could not create or read config", e);
-        }
-        this.content = tempContent;
-        this.bugfixes = content.bugfixes;
-        this.features = content.features;
-        this.performance = content.performance;
-    }
-
-
-    private void saveConfig(Gson gson, ConfigContent content) {
-        try (BufferedWriter writer = Files.newBufferedWriter(CONFIG_FILE)) {
-            gson.toJson(content, writer);
-        } catch (IOException e) {
-            PaperFixes.LOGGER.error("Could not write to config", e);
-        }
-    }
-
-    private ConfigContent resetConfig(Gson gson) {
-        ConfigContent overwrite = new ConfigContent();
-        saveConfig(gson, overwrite);
-        return overwrite;
-    }
-
-    private ConfigContent readConfig(Gson gson) {
-        try (BufferedReader reader = Files.newBufferedReader(CONFIG_FILE)) {
-            JsonElement element = gson.fromJson(reader, JsonElement.class);
-            if (element == null || element.isJsonNull()
-                    || (element.isJsonObject() && element.getAsJsonObject().size() == 0)) {
-                PaperFixes.LOGGER.warn("Config is empty, resetting it");
-                return resetConfig(gson);
-            }
-
-            return deserializeAndCheck(gson, element.getAsJsonObject());
-        } catch (IOException e) {
-            PaperFixes.LOGGER.error("Could not read from config", e);
-            return resetConfig(gson);
-        }
-    }
-
-    private ConfigContent deserializeAndCheck(Gson gson, JsonObject object) {
-        ConfigContent config = gson.fromJson(object, ConfigContent.class);
-
-        int defaultSpawnChunkRadius = object.getAsJsonObject("features").get(DEFAULT_SPAWN_CHUNK_RADIUS).getAsInt();
-        if (defaultSpawnChunkRadius < 0 || defaultSpawnChunkRadius > 32) {
-            config.features.defaultSpawnChunkRadius = MathHelper.clamp(defaultSpawnChunkRadius, 0, 32);
+            Class.forName("com.cleanroommc.configanytime.ConfigAnytime", false, PaperFixesConfig.class.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(
+                    "PaperFixes requires ConfigAnytime, but it is not currently present on the classpath. Please add ConfigAnytime 3.0 or newer and try starting your game again." +
+                            "\nIf this issue persists after adding ConfigAnytime and you are using the latest version, please open an issue at https://github.com/Elephant1214/PaperFixes."
+            );
         }
 
-        saveConfig(gson, config); // Update either way to ensure no options are ever missing
-        return config;
+        ConfigAnytime.register(PaperFixesConfig.class);
     }
-
-    private static final String DEFAULT_SPAWN_CHUNK_RADIUS = "defaultSpawnChunkRadius";
 }

@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.server.tileentity.smarter_chest_anim;
+package me.elephant1214.paperfixes.mixin.common.tileentity.fast_chests;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -31,16 +31,19 @@ public abstract class MixinTileEntityChest extends TileEntityLockableLoot implem
     public abstract void checkForAdjacentChests();
 
     /**
-     * @reason We never want this to run.
-     * I'm not even sure what would happen if it did other than problems.
+     * @reason We never want this to run on servers.
      */
     @Inject(method = "update", at = @At("HEAD"), cancellable = true)
     private void noChestAnimationInTick(CallbackInfo ci) {
-        ci.cancel();
+        if (!this.world.isRemote) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "openInventory", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V"))
     private void handleOpenChest(EntityPlayer player, CallbackInfo ci) {
+        if (this.world.isRemote) return;
+
         this.checkForAdjacentChests();
 
         if (this.numPlayersUsing > 0 && this.lidAngle == 0.0F && this.adjacentChestZNeg == null && this.adjacentChestXNeg == null) {
@@ -63,6 +66,8 @@ public abstract class MixinTileEntityChest extends TileEntityLockableLoot implem
 
     @Inject(method = "closeInventory", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V"))
     private void handleCloseChest(EntityPlayer player, CallbackInfo ci) {
+        if (this.world.isRemote) return;
+
         if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F) {
             float f = 0.1F;
 

@@ -1,4 +1,4 @@
-package me.elephant1214.paperfixes.mixin.common.server.optimize_task_queue;
+package me.elephant1214.paperfixes.mixin.common.server.optimized_task_queue;
 
 import io.papermc.paper.CachedSizeConcurrentLinkedQueue;
 import net.minecraft.command.ICommandSender;

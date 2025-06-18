@@ -22,12 +22,13 @@
         "common.network.clear_packet_queue.MixinNetworkManager",
         "common.network.fast_data_mgr.MixinEntityDataManager",
         "common.server.improved_tick_loop.MixinMinecraftServer",
-        "common.server.optimize_task_queue.MixinMinecraftServer",
-        "common.server.task_scheduler.MixinMinecraftServer",
+        "common.server.optimized_task_queue.MixinMinecraftServer",
+        "common.tileentity.fast_chests.MixinTileEntityChest",
         "common.tileentity.handle_null_tile_crash.MixinTileEntity",
         "common.world.bugfix.InvokerNetHandlerPlayServer",
         "common.world.bugfix.MixinExtendedBlockStorage",
         "common.world.bugfix.MixinTeleporter",
+        "common.world.fast_border.MixinWorldBorder",
         "common.world.cache_densities.AccessorExplosion",
         "common.world.cache_densities.MixinExplosion",
         "common.world.cache_densities.MixinMinecraftServer",
@@ -43,11 +44,6 @@
     ],
     "client": [
         "client.multiplayer.cache_last_chunk.MixinChunkProviderClient"
-    ],
-    "server": [
-        "server.tileentity.smarter_chest_anim.MixinTileEntityChest",
-        "server.world.cache_border.MixinWorld",
-        "server.world.cache_border.MixinWorldBorder"
     ],
     "overwrites": {
         "conformVisibility": true
