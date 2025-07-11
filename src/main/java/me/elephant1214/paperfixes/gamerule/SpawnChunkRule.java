@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SpawnChunkRule {
     public static final String SPAWN_CHUNK_RADIUS_RULE = "spawnChunkRadius";
-    public static int radius = PaperFixesConfig.features.defaultSpawnChunkRadius;
+    public static int radius = PaperFixesConfig.features.spawnChunkRadius;
 
     /**
      * The gamerule is added when the overworld is loaded.
@@ -36,7 +36,7 @@ public final class SpawnChunkRule {
     @SubscribeEvent
     public void worldUnload(@NotNull WorldEvent.Unload event) {
         if (!event.getWorld().isRemote && event.getWorld().provider.getDimensionType() == DimensionType.OVERWORLD) {
-            radius = PaperFixesConfig.features.defaultSpawnChunkRadius;
+            radius = PaperFixesConfig.features.spawnChunkRadius;
         }
     }
 

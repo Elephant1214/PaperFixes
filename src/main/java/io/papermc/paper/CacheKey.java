@@ -1,6 +1,6 @@
 package io.papermc.paper;
 
-import me.elephant1214.paperfixes.mixin.common.world.cache_densities.AccessorExplosion;
+import me.elephant1214.paperfixes.mixin.common.world.cache_densities.ExplosionAccessor;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -12,7 +12,7 @@ public final class CacheKey {
     private final double maxX, maxY, maxZ;
 
     public CacheKey(Explosion explosion, AxisAlignedBB aabb) {
-        this.world = ((AccessorExplosion) explosion).getWorld();
+        this.world = ((ExplosionAccessor) explosion).getWorld();
         this.posX = explosion.getPosition().x;
         this.posY = explosion.getPosition().y;
         this.posZ = explosion.getPosition().z;
