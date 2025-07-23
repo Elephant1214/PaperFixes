@@ -10,7 +10,7 @@ import java.util.Map;
 
 @IFMLLoadingPlugin.Name("PaperFixes")
 @IFMLLoadingPlugin.MCVersion("1.12.2")
-public class PFLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
+public class PFEarlyMixinLoader implements IFMLLoadingPlugin, IEarlyMixinLoader {
     @Override
     public @Nullable String[] getASMTransformerClass() {
         return null;

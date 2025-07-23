@@ -98,7 +98,7 @@ tasks {
     }
     jar {
         manifest.attributes(
-            "FMLCorePlugin" to ("$modGroup.core.PFLoadingPlugin"),
+            "FMLCorePlugin" to ("$modGroup.core.PFEarlyMixinLoader"),
             "FMLCorePluginContainsFMLMod" to "true",
             "FMLAT" to "${modID}_at.cfg",
             "ForceLoadAsMod" to "true",

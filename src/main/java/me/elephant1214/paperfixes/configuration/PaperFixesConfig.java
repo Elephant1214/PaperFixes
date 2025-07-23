@@ -76,7 +76,8 @@ public final class PaperFixesConfig {
         try {
             Class.forName("com.cleanroommc.configanytime.ConfigAnytime", false, PaperFixesConfig.class.getClassLoader());
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("PaperFixes requires ConfigAnytime, but it is not currently present on the classpath. Please add ConfigAnytime 3.0 or newer and try starting your game again." + "\nIf this issue persists after adding ConfigAnytime and you are using the latest version of both mods, please open an issue at https://github.com/Elephant1214/PaperFixes.");
+            throw new RuntimeException("PaperFixes requires ConfigAnytime, but it is not currently present. Please add ConfigAnytime 3.0 or later and try starting your game again." +
+                    "\nIf this issue persists after adding ConfigAnytime and you are using the latest version of both mods, please open an issue at https://github.com/Elephant1214/PaperFixes.");
         }
 
         ConfigAnytime.register(PaperFixesConfig.class);
