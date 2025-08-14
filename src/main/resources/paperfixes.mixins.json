@@ -32,6 +32,7 @@
         "common.network.fast_data_mgr.EntityDataManagerMixin",
         "common.server.improved_tick_loop.MinecraftServerMixin",
         "common.server.optimized_task_queue.MinecraftServerMixin",
+        "common.world.spawn_chunk_gr.MinecraftServerMixin",
         "common.tileentity.fast_chests.TileEntityChestMixin",
         "common.tileentity.handle_null_tile_crash.TileEntityMixin",
         "common.world.bugfix.NetHandlerPlayServerInvoker",

@@ -3,7 +3,7 @@
         "modid": "paperfixes",
         "name": "PaperFixes",
         "description": "A collection of bug and performance fixes from CraftBukkit, Spigot, Paper, and Paper forks in a Forge mod.",
-        "version": "2.0.0-rc.2",
+        "version": "2.0.0",
         "mcversion": "1.12.2",
         "license": "GPL-3.0",
         "logoFile": "assets/paperfixes/paperfixes-icon.png",

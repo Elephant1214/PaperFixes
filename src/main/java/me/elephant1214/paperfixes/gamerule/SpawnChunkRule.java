@@ -51,7 +51,11 @@ public final class SpawnChunkRule {
         }
     }
 
-    private static int getRadius(@NotNull GameRules gameRules) {
+    /**
+     * Helper for accessing the spawn chunk gamerule.
+     * This will also clamp the value if it is >32 or <0.
+     */
+    public static int getRadius(@NotNull GameRules gameRules) {
         final int spawnChunkRadius = gameRules.getInt(SPAWN_CHUNK_RADIUS_RULE);
         if (spawnChunkRadius > 32 || spawnChunkRadius < 0) {
             final int clamped = MathHelper.clamp(spawnChunkRadius, 0, 32);

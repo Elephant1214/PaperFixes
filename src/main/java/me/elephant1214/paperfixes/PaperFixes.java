@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 public final class PaperFixes {
     public static final String NAME = "PaperFixes";
     public static final String MOD_ID = "paperfixes";
-    public static final String VERSION = "2.0.0-rc.2";
+    public static final String VERSION = "2.0.0";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     public PaperFixes() {
